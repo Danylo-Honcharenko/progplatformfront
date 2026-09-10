@@ -298,7 +298,7 @@ const Course = () => {
                                                     disabled={topic?.exercise === undefined}
                                                     onClick={() => console.log("click!!!")}>Завдання</Button>
                                             <Button className="cursor-pointer"
-                                                    disabled={topic.tests == undefined || topic?.tests.length == 0}
+                                                    disabled={topic?.tests == undefined || topic?.tests.length == 0}
                                                     onClick={() => setOpenTest(true)}>Тестування</Button>
                                         </div>
                                     </div>

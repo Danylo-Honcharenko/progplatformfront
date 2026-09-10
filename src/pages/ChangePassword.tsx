@@ -16,7 +16,7 @@ import {
 
 const ChangePassword = () => {
 
-    const [error, setError] = useState<Response<ErrorResponse<string | FieldErrorResponse>> | undefined>(undefined);
+    const [error] = useState<Response<ErrorResponse<string | FieldErrorResponse>> | undefined>(undefined);
     const [email, setEmail] = useState<string>('');
     const [oldPassword, setOldPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
