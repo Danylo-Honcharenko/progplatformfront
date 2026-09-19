@@ -11,4 +11,5 @@ export type TopicModel = {
     exercise: ExerciseModel;
     created: string;
     updated: string;
+    page: number;
 }

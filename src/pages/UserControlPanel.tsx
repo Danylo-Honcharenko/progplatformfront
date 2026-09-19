@@ -14,10 +14,9 @@ import {
 import {TestResultResponse} from "@/type/response/TestResultResponse.ts";
 import {Link, Navigate} from "react-router-dom";
 import {CoursesResponse} from "@/type/response/CoursesResponse.ts";
-import {userService} from "@/services/userService.ts";
-import {testService} from "@/services/testService.ts";
-import {courseService} from "@/services/courseService.ts";
-import {responseUserDataHandler} from "@/utils/responseUserDataHandler.ts";
+import {UserService} from "@/services/UserService.ts";
+import {TestService} from "@/services/TestService.ts";
+import {CourseService} from "@/services/CourseService.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 import {
     DropdownMenuContent,
@@ -29,36 +28,55 @@ import {
 import {ChevronDown, Home, LogOut, User} from 'lucide-react';
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion.tsx";
 
-const UserControllPanel = () => {
+const UserControlPanel = () => {
 
     const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
     const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
     const [isLogout, setLogout] = useState<boolean>(false);
     const [testResults, setTestResults] = useState<Response<TestResultResponse> | undefined>(undefined);
     const [courses, setCourses] = useState<Response<CoursesResponse> | undefined>(undefined);
-    const [loadingCourses, setLoadingCourses] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const loadData = async () => {
+        try {
+            const userService = new UserService();
+            const courseService = new CourseService();
+            const testService = new TestService();
+
+            const responses = await Promise.all([
+                userService.getAuthUser(),
+                testService.getTestResults(),
+                courseService.getUserCourses()
+            ]);
+
+            setUser(responses[0]);
+            setTestResults(responses[1]);
+            setCourses(responses[2]);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
-        userService.checkIsAuthUser()
-            .then(res => responseUserDataHandler(res.data, (userRespData: Response<UserResponse>) => {
-                setUser(userRespData);
-                testService.getTestResults()
-                    .then((res) => setTestResults(res.data))
-                    .catch((err) => setError(err));
 
-                courseService.getUserCourses()
-                    .then((res) => setCourses(res.data))
-                    .then(() => setLoadingCourses(false))
-                    .catch((err) => setError(err));
-            }))
-            .catch((err) => setError(err.response))
+        loadData().then();
+
     }, [isLogout]);
 
     if (error !== undefined && error.status === 401) return <Navigate to="/login" replace/>;
 
-    const logout = () => {
-        userService.logout()
-            .then(() => setLogout(true));
+    const logout = async () => {
+        try {
+            const userService = new UserService();
+            await userService.logout();
+            setLogout(true);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error);
+        }
     }
 
     const coursesAmount = courses?.data.courses?.length;
@@ -106,7 +124,7 @@ const UserControllPanel = () => {
                     <div>
                         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Курси</h3>
                     </div>
-                    {loadingCourses ?
+                    {loading ?
                         <div>
                             <p>Завантаження...</p>
                         </div>
@@ -194,4 +212,4 @@ const UserControllPanel = () => {
     );
 };
 
-export default UserControllPanel;
+export default UserControlPanel;

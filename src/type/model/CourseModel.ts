@@ -1,4 +1,4 @@
-import {ModuleModel} from "@/interface/ModuleModel.ts";
+import {ModuleModel} from "@/type/model/ModuleModel.ts";
 
 export type CourseModel = {
     id: number;

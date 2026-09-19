@@ -9,8 +9,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {ArrowLeft, ChevronDown, Home, LogOut} from "lucide-react";
 import {Badge} from "@/components/ui/badge.tsx";
 import {Link, Navigate} from "react-router-dom";
-import {userService} from "@/services/userService.ts";
-import {responseUserDataHandler} from "@/utils/responseUserDataHandler.ts";
+import {UserService} from "@/services/UserService.ts";
 import {Response} from "@/type/response/Response.ts";
 import {UserResponse} from "@/type/response/UserResponse.ts";
 import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
@@ -22,17 +21,32 @@ const UserProfile = () => {
     const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
     const [isLogout, setLogout] = useState<boolean>(false);
 
+    const getAuthUser = async () => {
+        try {
+            const userService = new UserService();
+            const response = await userService.getAuthUser();
+            setUser(response);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
-        userService.checkIsAuthUser()
-            .then(res => responseUserDataHandler(res.data, (userRespData: Response<UserResponse>) => setUser(userRespData)))
-            .catch((err) => setError(err.response))
+        getAuthUser().then();
     }, [isLogout]);
 
     if (error !== undefined && error.status === 401) return <Navigate to="/login" replace/>;
 
-    const logout = () => {
-        userService.logout()
-            .then(() => setLogout(true));
+    const logout = async () => {
+        try {
+            const userService = new UserService();
+            await userService.logout();
+            setLogout(true);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error);
+        }
     }
 
     return (

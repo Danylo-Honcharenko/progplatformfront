@@ -26,7 +26,7 @@ Follow surrounding formatting: application files generally use four-space indent
 
 ## Testing Guidelines
 
-No automated test framework, test naming convention, or coverage threshold is established. `src/services/testService.ts` handles course tests; it is not a test suite. Run `npm run build` and manually exercise changed routes, API error states, and affected authentication flows. Record verification in the PR.
+No automated test framework, test naming convention, or coverage threshold is established. `src/services/TestService.ts` handles course tests; it is not a test suite. Run `npm run build` and manually exercise changed routes, API error states, and affected authentication flows. Record verification in the PR.
 
 ## Commit & Pull Request Guidelines
 

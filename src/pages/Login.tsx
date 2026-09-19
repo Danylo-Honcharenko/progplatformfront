@@ -1,4 +1,4 @@
-import {useState, ChangeEvent, useEffect} from "react";
+import {useState, ChangeEvent} from "react";
 import {Response} from "../type/response/Response.ts";
 import {ErrorResponse} from "../type/response/ErrorResponse.ts";
 import {UserResponse} from "../type/response/UserResponse.ts";
@@ -14,7 +14,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog.tsx";
-import {userService} from "@/services/userService.ts";
+import {UserService} from "@/services/UserService.ts";
 
 
 const Login = () => {
@@ -25,27 +25,30 @@ const Login = () => {
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
-    const login = (event: ChangeEvent<HTMLFormElement>) => {
+    const login = async (event: ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
         setLoading(true);
-        userService.login(email, password)
-            .then((res) => setUser(res.data))
-            .catch((err) => setError(err.response.data));
-    }
 
-    useEffect(() => {
-        if (error !== undefined) {
+        try {
+            const userService = new UserService();
+            const response = await userService.login(email, password);
+
+            setUser(response.data);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error);
+        } finally {
             setLoading(false);
         }
-    }, [error]);
+    }
 
     if (user !== undefined && user.status === 200 && user.data.role === "ROLE_USER") {
         return <Navigate to="/user" replace/>
     }
 
-    // if (user !== undefined && user.status === 200 && user.data.role === "ROLE_ADMIN") {
-    //     return <Navigate to="/user-admin" replace />
-    // }
+    if (user !== undefined && user.status === 200 && user.data.role === "ROLE_ADMIN") {
+        return <Navigate to="/user" replace />
+    }
 
     const isBadRequestPasswordError = error !== undefined && error.status === 400 && typeof error?.data.details === "string";
     const isUserNotFound = error !== undefined && error.status === 404;

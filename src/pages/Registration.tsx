@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, useState} from "react";
 import {Response} from "../type/response/Response.ts";
 import {UserResponse} from "../type/response/UserResponse.ts";
 import {ErrorResponse} from "../type/response/ErrorResponse.ts";
@@ -8,7 +8,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {AlertCircle} from "lucide-react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {FieldErrorResponse} from "@/type/response/FieldErrorResponse.ts";
-import {userService} from "@/services/userService.ts";
+import {UserService} from "@/services/UserService.ts";
 
 const Registration = () => {
     const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
@@ -19,28 +19,21 @@ const Registration = () => {
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
-    const registration = (event: ChangeEvent<HTMLFormElement>) => {
+    const registration = async (event: ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
-
         setLoading(true);
 
-        userService.registration(firstName, lastName, email, password)
-            .then((res) => setUser(res.data))
-            .then(() => setLoading(false))
-            .catch((err) => setError(err.response.data));
+        try {
+            const userService = new UserService();
+            const response = await userService.registration(firstName, lastName, email, password);
+            setUser(response);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     }
-
-    useEffect(() => {
-        if (error !== undefined) {
-            setLoading(false);
-        }
-    }, [error]);
-
-    useEffect(() => {
-        if (user !== undefined && user.status === 201) {
-            setLoading(false);
-        }
-    }, []);
 
     if (user?.status === 201) {
         return (

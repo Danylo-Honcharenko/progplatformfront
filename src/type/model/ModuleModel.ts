@@ -6,4 +6,5 @@ export type ModuleModel = {
     description: string;
     topics: TopicModel[]
     complete: number;
+    pages: number[];
 }

@@ -16,12 +16,12 @@ import {CourseModel} from "@/type/model/CourseModel.ts";
 import {CreateModulStateResponse} from "@/type/response/CreateModulStateResponse";
 import {CODE, H2, P, PRE, UL} from "@/utils/markDwmStyle.tsx";
 import {TopicModel} from "@/type/model/TopicModel";
-import {userService} from "@/services/userService.ts";
-import {courseService} from "@/services/courseService.ts";
-import {moduleService} from "@/services/moduleService.ts";
-import {testService} from "@/services/testService.ts";
-import {responseUserDataHandler} from "@/utils/responseUserDataHandler.ts";
+import {UserService} from "@/services/UserService.ts";
+import {CourseService} from "@/services/CourseService.ts";
+import {ModuleService} from "@/services/ModuleService.ts";
+import {TestService} from "@/services/TestService.ts";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
+import {ModuleModel} from "@/type/model/ModuleModel.ts";
 
 const Course = () => {
 
@@ -33,34 +33,51 @@ const Course = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [openTest, setOpenTest] = useState<boolean>(false);
     const [testResult, setTestResult] = useState<Response<TestResult> | undefined>(undefined);
-    const [moduleId, setModuleId] = useState<number>(0);
+    const [module, setModule] = useState<ModuleModel | undefined>(undefined);
     const [moduleState, setModuleState] = useState<Response<CreateModulStateResponse> | undefined>(undefined);
     const [loadingCourse, setLoadingCourse] = useState<boolean>(true);
     const [isTestSendForCheck, setIsTestSendForCheck] = useState<boolean>(false);
 
     let {id} = useParams();
 
-    console.log(topic)
+    const loadCourse = async () => {
+        try {
+            const userService = new UserService();
+            const courseService = new CourseService();
+
+            const result = await Promise.all([
+                userService.getAuthUser(),
+                courseService.getCourseByIdAndStaticByUserId(id)
+            ]);
+
+            setUser(result[0]);
+            setCourse(result[1]);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error);
+        } finally {
+            setLoadingCourse(false);
+        }
+    }
 
     useEffect(() => {
-        userService.checkIsAuthUser()
-            .then(res => responseUserDataHandler(res.data, (userRespData: Response<UserResponse>) => {
-                setUser(userRespData);
-                courseService.getCourseByIdAndStaticByUserId(id, userRespData.data.id)
-                    .then((res) => setCourse(res.data))
-                    .then(() => setLoadingCourse(false))
-                    .catch((err) => setError(err));
-            }))
-            .catch((err) => setError(err.response));
+
+        loadCourse().then();
+
     }, [moduleState, testResult]);
 
     if (error !== undefined && error.status === 401) return <Navigate to="/login" replace/>
 
-    const setDone = (topicId: number | undefined) => {
-        if (topicId !== undefined) {
-            moduleService.setCompletedTopic(moduleId, topicId, user?.data.id)
-                .then((res) => setModuleState(res.data))
-                .catch((err) => setError(err));
+    const setDone = async (topicId: number | undefined) => {
+        if (topicId === undefined) return;
+
+        try {
+            const moduleService = new ModuleService();
+            const response = await moduleService.setCompletedTopic(module?.id, topicId, user?.data.id);
+            setModuleState(response);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error)
         }
     }
 
@@ -103,23 +120,18 @@ const Course = () => {
         answersCurrent.push({"question": question, "answer": answer});
     };
 
-    const sendTest = (event: FormEvent<HTMLFormElement>, testUUID: string | undefined) => {
+    const sendTest = async (event: FormEvent<HTMLFormElement>, testUUID: string | undefined) => {
         event.preventDefault();
+        if (testUUID === undefined) return;
 
-        if (testUUID !== undefined) {
-            testService.checkTest(testUUID, user?.data.id, answersCurrent)
-                .then((res) => setTestResult(res.data))
-                .then(() => setIsTestSendForCheck(true))
-                .catch((err) => setError(err));
-        }
-    }
-
-    const map = new Map();
-    let count = 1;
-    if (topics !== undefined) {
-        for (const topic of topics) {
-            map.set(count, topic);
-            count++;
+        try {
+            const testService = new TestService();
+            const response = await testService.checkTest(testUUID, user?.data.id, answersCurrent);
+            setTestResult(response);
+            setIsTestSendForCheck(true);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error);
         }
     }
 
@@ -127,6 +139,11 @@ const Course = () => {
         if (testResult !== undefined) {
             return testResult.data.correctAnswers.find((e: AnswerResponse) => e.question === question) !== undefined;
         }
+    }
+
+    const setActiveTopic = (page: number) => {
+        const topic = topics?.find((topic) => topic.page === page);
+        setTopic(topic);
     }
 
     return (
@@ -250,7 +267,7 @@ const Course = () => {
                                                     setTopics(module.topics);
                                                     setOpen(true);
                                                     setTopic(module.topics[0]);
-                                                    setModuleId(module.id);
+                                                    setModule(module);
                                                 }}>Перейти</Button>
                                             </div>
                                         </div>
@@ -285,11 +302,13 @@ const Course = () => {
                                     </ScrollArea>
                                     <div className="flex justify-between mt-3">
                                         <div className="flex gap-2 items-center">
-                                            {Array.from(map).map(([key, value]) => (
+                                            {module?.pages.map((page, key) => (
                                                 <div key={key}>
-                                                    <Button variant={value.id === topic?.id ? "default" : "outline"}
-                                                            className="cursor-pointer"
-                                                            onClick={() => setTopic(value)}>{key}</Button>
+                                                    <Button
+                                                        variant={page === topic?.page ? "default" : "outline"}
+                                                        className="cursor-pointer"
+                                                        onClick={() => setActiveTopic(page)}
+                                                    >{page}</Button>
                                                 </div>
                                             ))}
                                         </div>

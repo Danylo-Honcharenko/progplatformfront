@@ -4,20 +4,27 @@ import {useEffect, useState} from "react";
 import {Response} from "@/type/response/Response.ts";
 import {UserResponse} from "@/type/response/UserResponse.ts";
 import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
-import {userService} from "@/services/userService.ts";
+import {UserService} from "@/services/UserService.ts";
 
 const Header = () => {
 
     const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
-    const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+    const [_, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+
+    const getAuthUser = async () => {
+        try {
+            const userService = new UserService();
+            const response = await userService.getAuthUser();
+            setUser(response);
+        } catch (error) {
+            setError(error as Response<ErrorResponse<string>>);
+            console.log(error);
+        }
+    }
 
     useEffect(() => {
-        userService.checkIsAuthUser()
-            .then((res) => setUser(res.data))
-            .catch((err) => setError(err));
+        getAuthUser().then();
     }, []);
-
-    error !== undefined ? console.log(error) : undefined;
 
     const isUserLogin = user?.status === 200;
     const buttonLink = isUserLogin ? "/user" : "/login";
