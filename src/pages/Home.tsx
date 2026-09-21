@@ -105,7 +105,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div>
-                        <img src={courseStruct} alt="Course Struct" width="800px" />
+                        <img src={courseStruct} alt="CoursePage Struct" width="800px" />
                     </div>
                 </div>
                 <div className="flex justify-between items-center pt-6">
@@ -118,7 +118,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div>
-                        <img src={exercise} alt="Course Struct" width="800px" />
+                        <img src={exercise} alt="CoursePage Struct" width="800px" />
                     </div>
                 </div>
                 <div className="flex justify-between items-center pt-6">
@@ -128,7 +128,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div>
-                        <img src={stat} alt="Course Struct" width="750px" />
+                        <img src={stat} alt="CoursePage Struct" width="750px" />
                     </div>
                 </div>
                 <div className="flex justify-between items-center pt-6">
@@ -141,7 +141,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div>
-                        <img src={level} alt="Course Struct" width="750px" />
+                        <img src={level} alt="CoursePage Struct" width="750px" />
                     </div>
                 </div>
             </div>
