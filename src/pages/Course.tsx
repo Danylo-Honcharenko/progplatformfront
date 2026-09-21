@@ -5,7 +5,6 @@ import {Button} from "@/components/ui/button.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
 import ReactMarkdown from "react-markdown";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
-import {UserResponse} from "@/type/response/UserResponse.ts";
 import {Link, Navigate, useParams} from "react-router-dom";
 import {Label} from "@/components/ui/label.tsx";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group.tsx";
@@ -16,19 +15,18 @@ import {CourseModel} from "@/type/model/CourseModel.ts";
 import {CreateModulStateResponse} from "@/type/response/CreateModulStateResponse";
 import {CODE, H2, P, PRE, UL} from "@/utils/markDwmStyle.tsx";
 import {TopicModel} from "@/type/model/TopicModel";
-import {UserService} from "@/services/UserService.ts";
 import {CourseService} from "@/services/CourseService.ts";
 import {ModuleService} from "@/services/ModuleService.ts";
 import {TestService} from "@/services/TestService.ts";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 import {ModuleModel} from "@/type/model/ModuleModel.ts";
 import {baseErrorHandler} from "@/utils/errorHandler.ts";
+import useAuth from "@/hooks/useAuth.tsx";
 
 const Course = () => {
 
-    const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
     const [course, setCourse] = useState<Response<CourseModel> | undefined>(undefined);
-    const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+    const [_, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
     const [topics, setTopics] = useState<TopicModel[] | undefined>(undefined);
     const [topic, setTopic] = useState<TopicModel | undefined>(undefined);
     const [open, setOpen] = useState<boolean>(false);
@@ -39,20 +37,17 @@ const Course = () => {
     const [loadingCourse, setLoadingCourse] = useState<boolean>(true);
     const [isTestSendForCheck, setIsTestSendForCheck] = useState<boolean>(false);
 
+    const {user, notAuthorized} = useAuth();
+
     let {id} = useParams();
 
     const loadCourse = async () => {
         try {
-            const userService = new UserService();
             const courseService = new CourseService();
 
-            const result = await Promise.all([
-                userService.getAuthUser(),
-                courseService.getCourseByIdAndStaticByUserId(id)
-            ]);
+            const response = await courseService.getCourseByIdAndStaticByUserId(id);
 
-            setUser(result[0]);
-            setCourse(result[1]);
+            setCourse(response);
         } catch (error) {
             baseErrorHandler(error, setError);
             console.log(error);
@@ -65,9 +60,9 @@ const Course = () => {
 
         loadCourse().then();
 
-    }, [moduleState, testResult]);
+    }, []);
 
-    if (error !== undefined && error.status === 401) return <Navigate to="/login" replace/>
+    if (notAuthorized) return <Navigate to="/login" replace/>
 
     const setDone = async (topicId: number | undefined) => {
         if (topicId === undefined) return;

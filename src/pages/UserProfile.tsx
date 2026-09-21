@@ -1,99 +1,23 @@
-import {useEffect, useState} from 'react';
-import {
-    DropdownMenu,
-    DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
-    DropdownMenuLabel, DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {ArrowLeft, ChevronDown, Home, LogOut} from "lucide-react";
-import {Badge} from "@/components/ui/badge.tsx";
-import {Link, Navigate} from "react-router-dom";
-import {UserService} from "@/services/UserService.ts";
-import {Response} from "@/type/response/Response.ts";
-import {UserResponse} from "@/type/response/UserResponse.ts";
-import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
-import {Separator} from "@/components/ui/separator.tsx";
-import {Skeleton} from "@/components/ui/skeleton.tsx";
-import {baseErrorHandler} from "@/utils/errorHandler.ts";
+import PanelHeader from "@/components/PanelHeader.tsx";
+import useAuth from "@/hooks/useAuth.tsx";
+import {Badge} from "lucide-react";
+import {Navigate} from "react-router-dom";
 
 const UserProfile = () => {
 
-    const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
-    const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
-    const [isLogout, setLogout] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true);
+    const {loadingUser, user, notAuthorized} = useAuth();
 
-
-    const getAuthUser = async () => {
-        try {
-            const userService = new UserService();
-            const response = await userService.getAuthUser();
-            setUser(response);
-        } catch (error) {
-            baseErrorHandler(error, setError);
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        getAuthUser().then();
-    }, [isLogout]);
-
-    if (error !== undefined && error.status === 401) return <Navigate to="/login" replace/>;
-
-    const logout = async () => {
-        try {
-            const userService = new UserService();
-            await userService.logout();
-            setLogout(true);
-        } catch (error) {
-            baseErrorHandler(error, setError);
-            console.log(error);
-        }
-    }
+    if (notAuthorized) return <Navigate to="/login" replace/>;
 
     return (
         <div>
             <div className="pl-35 pr-35 pt-3">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h2 className="text-xl">Профіль користувача</h2>
-                    </div>
-                    <div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant='ghost'
-                                        className="cursor-pointer">{loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : user?.data.lastName + " " + user?.data.firstName}<ChevronDown/></Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56">
-                                <DropdownMenuLabel><Badge>{user?.data.levelAlias}</Badge>Рівень: {user?.data.level}
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator/>
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem onClick={logout}>
-                                        <LogOut/>
-                                        <span>Вийти</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator/>
-                                    <Link to="/" replace>
-                                        <DropdownMenuItem>
-                                            <Home/><span>На головну</span>
-                                        </DropdownMenuItem>
-                                    </Link>
-                                    <Link to="/panel" replace>
-                                        <DropdownMenuItem>
-                                            <ArrowLeft /><span>До особистого кабінету</span>
-                                        </DropdownMenuItem>
-                                    </Link>
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                </div>
-                <Separator className="mt-2"/>
+                <PanelHeader
+                    title="Профіль користувача"
+                    isProfilePage={true}
+                    loading={loadingUser}
+                    user={user}
+                />
                 <div>
                     <div>
                         <div className="mt-3 bg-zinc-50 p-3 rounded-lg">
