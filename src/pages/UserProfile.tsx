@@ -14,12 +14,16 @@ import {Response} from "@/type/response/Response.ts";
 import {UserResponse} from "@/type/response/UserResponse.ts";
 import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
 import {Separator} from "@/components/ui/separator.tsx";
+import {Skeleton} from "@/components/ui/skeleton.tsx";
+import {baseErrorHandler} from "@/utils/errorHandler.ts";
 
 const UserProfile = () => {
 
     const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
     const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
     const [isLogout, setLogout] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
+
 
     const getAuthUser = async () => {
         try {
@@ -27,8 +31,10 @@ const UserProfile = () => {
             const response = await userService.getAuthUser();
             setUser(response);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            baseErrorHandler(error, setError);
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -44,7 +50,7 @@ const UserProfile = () => {
             await userService.logout();
             setLogout(true);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            baseErrorHandler(error, setError);
             console.log(error);
         }
     }
@@ -60,7 +66,7 @@ const UserProfile = () => {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant='ghost'
-                                        className="cursor-pointer">{user?.data.lastName} {user?.data.firstName}<ChevronDown/></Button>
+                                        className="cursor-pointer">{loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : user?.data.lastName + " " + user?.data.firstName}<ChevronDown/></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
                                 <DropdownMenuLabel><Badge>{user?.data.levelAlias}</Badge>Рівень: {user?.data.level}
@@ -77,7 +83,7 @@ const UserProfile = () => {
                                             <Home/><span>На головну</span>
                                         </DropdownMenuItem>
                                     </Link>
-                                    <Link to="/user" replace>
+                                    <Link to="/panel" replace>
                                         <DropdownMenuItem>
                                             <ArrowLeft /><span>До особистого кабінету</span>
                                         </DropdownMenuItem>

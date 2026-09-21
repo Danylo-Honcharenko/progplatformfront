@@ -22,6 +22,7 @@ import {ModuleService} from "@/services/ModuleService.ts";
 import {TestService} from "@/services/TestService.ts";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 import {ModuleModel} from "@/type/model/ModuleModel.ts";
+import {baseErrorHandler} from "@/utils/errorHandler.ts";
 
 const Course = () => {
 
@@ -53,7 +54,7 @@ const Course = () => {
             setUser(result[0]);
             setCourse(result[1]);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            baseErrorHandler(error, setError);
             console.log(error);
         } finally {
             setLoadingCourse(false);
@@ -76,7 +77,7 @@ const Course = () => {
             const response = await moduleService.setCompletedTopic(module?.id, topicId, user?.data.id);
             setModuleState(response);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            baseErrorHandler(error, setError);
             console.log(error)
         }
     }
@@ -130,7 +131,7 @@ const Course = () => {
             setTestResult(response);
             setIsTestSendForCheck(true);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            baseErrorHandler(error, setError);
             console.log(error);
         }
     }
@@ -148,13 +149,6 @@ const Course = () => {
 
     return (
         <div>
-            {loadingCourse ?
-                <div className="text-center p-3 absolute w-full">
-                    <p>Завантаження...</p>
-                </div>
-                :
-                <></>
-            }
             {openTest ?
                 <div className="flex flex-col items-center justify-center pb-8">
                     <div className="w-1/2">
@@ -274,7 +268,7 @@ const Course = () => {
                                     ))}
                                 </div>
                             }
-                            <Button asChild variant="link" className="p-0"><Link to="/user" replace>До особистого
+                            <Button asChild variant="link" className="p-0"><Link to="/panel" replace>До особистого
                                 кабінету</Link></Button>
                         </div>
                     </>

@@ -1,7 +1,6 @@
 import {Link} from "react-router-dom";
 import {ChangeEvent, useState} from "react";
 import {Response} from "../type/response/Response.ts";
-import {UserResponse} from "../type/response/UserResponse.ts";
 import {ErrorResponse} from "../type/response/ErrorResponse.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Input} from "@/components/ui/input.tsx";
@@ -9,9 +8,12 @@ import {AlertCircle} from "lucide-react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {FieldErrorResponse} from "@/type/response/FieldErrorResponse.ts";
 import {UserService} from "@/services/UserService.ts";
+import ErrorMessageBox from "@/components/ErrorMessageBox.tsx";
+import {Spinner} from "@/components/ui/spinner.tsx";
+import {fieldErrorHandler} from "@/utils/errorHandler.ts";
 
 const Registration = () => {
-    const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
+    const [statusCode, setStatusCode] = useState<number>(0);
     const [error, setError] = useState<Response<ErrorResponse<string | FieldErrorResponse>> | undefined>(undefined);
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
@@ -25,17 +27,17 @@ const Registration = () => {
 
         try {
             const userService = new UserService();
-            const response = await userService.registration(firstName, lastName, email, password);
-            setUser(response);
+            const status = await userService.registration(firstName, lastName, email, password);
+            setStatusCode(status);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            fieldErrorHandler(error, setError);
             console.log(error);
         } finally {
             setLoading(false);
         }
     }
 
-    if (user?.status === 201) {
+    if (statusCode === 201) {
         return (
             <div className="form-container">
                 <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center">Тепер увійдіть щоб
@@ -49,13 +51,6 @@ const Registration = () => {
 
     return (
         <div>
-            {loading ?
-                <div className="text-center p-3 bg-black text-white absolute w-full">
-                    <p>Завантаження...</p>
-                </div>
-                :
-                <></>
-            }
             <div className="form-container">
                 <div className="w-sm">
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center">Реєстрація</h3>
@@ -92,7 +87,7 @@ const Registration = () => {
                             className="h-12"
                             disabled={loading}
                         />
-                        <Button className="h-11 cursor-pointer" disabled={loading}>Зареєструватись</Button>
+                        <Button className="h-11 cursor-pointer" disabled={loading}>{loading ? <Spinner data-icon="inline-start" /> : "Зареєструватись"}</Button>
                     </form>
                     <div className="mt-3 text-center">
                         <p className="text-gray-400">Вже маєте акаунт?</p>
@@ -108,15 +103,10 @@ const Registration = () => {
                         </Alert>
                         : <></>
                     }
-                    {error !== undefined && error.status === 400 && typeof error?.data.details === "object" ?
-                        <Alert variant="destructive" className="mt-4 border-red-500">
-                            <AlertCircle className="h-4 w-4"/>
-                            <AlertTitle>Помилка валідації вхідних параметрів</AlertTitle>
-                            <AlertDescription className="flex flex-col gap-0.5">
-                                <p>{error?.data.details.password}</p>
-                                <p>{error?.data.details.email}</p>
-                            </AlertDescription>
-                        </Alert>
+                    {error !== undefined && error.status === 400 ?
+                        <ErrorMessageBox
+                            error={error}
+                        />
                         :
                         <></>
                     }

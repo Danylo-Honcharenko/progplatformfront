@@ -17,7 +17,7 @@ export class UserService {
         }
     }
 
-    async registration(firstName: string, lastName: string, email: string, password: string): Promise<Response<UserResponse>> {
+    async registration(firstName: string, lastName: string, email: string, password: string) {
         try {
             const request = {
                 firstName: firstName,
@@ -27,7 +27,7 @@ export class UserService {
             };
 
             const response = await axiosInstance.post('/user/registration', request);
-            return response.data;
+            return response.status;
         } catch (error) {
             throw error;
         }

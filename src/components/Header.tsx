@@ -3,13 +3,11 @@ import {Button} from "@/components/ui/button.tsx";
 import {useEffect, useState} from "react";
 import {Response} from "@/type/response/Response.ts";
 import {UserResponse} from "@/type/response/UserResponse.ts";
-import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
 import {UserService} from "@/services/UserService.ts";
 
 const Header = () => {
 
     const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
-    const [_, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
 
     const getAuthUser = async () => {
         try {
@@ -17,8 +15,6 @@ const Header = () => {
             const response = await userService.getAuthUser();
             setUser(response);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
-            console.log(error);
         }
     }
 
@@ -27,7 +23,7 @@ const Header = () => {
     }, []);
 
     const isUserLogin = user?.status === 200;
-    const buttonLink = isUserLogin ? "/user" : "/login";
+    const buttonLink = isUserLogin ? "/panel" : "/login";
     const buttonText = isUserLogin ? "Перейти до кабінету користувача" : "Увійти";
 
     return (

@@ -27,6 +27,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {ChevronDown, Home, LogOut, User} from 'lucide-react';
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion.tsx";
+import {Skeleton} from "@/components/ui/skeleton.tsx";
+import {baseErrorHandler} from "@/utils/errorHandler.ts";
 
 const UserControlPanel = () => {
 
@@ -53,7 +55,7 @@ const UserControlPanel = () => {
             setTestResults(responses[1]);
             setCourses(responses[2]);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            baseErrorHandler(error, setError);
             console.error(error);
         } finally {
             setLoading(false);
@@ -74,7 +76,7 @@ const UserControlPanel = () => {
             await userService.logout();
             setLogout(true);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            baseErrorHandler(error, setError);
             console.log(error);
         }
     }
@@ -87,12 +89,12 @@ const UserControlPanel = () => {
             <div className="pl-35 pr-35 pt-3">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-xl">Особистий кабінет</h2>
+                        <h2 className="text-xl">Панель користувача</h2>
                     </div>
                     <div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant='ghost' className="cursor-pointer">{user?.data.lastName} {user?.data.firstName}<ChevronDown /></Button>
+                                <Button variant='ghost' className="cursor-pointer">{loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : user?.data.lastName + " " + user?.data.firstName}<ChevronDown /></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
                                 <DropdownMenuLabel><Badge>{user?.data.levelAlias}</Badge>Рівень: {user?.data.level}</DropdownMenuLabel>

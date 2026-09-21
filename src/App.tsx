@@ -19,7 +19,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/registration" element={<Registration />} />
                 <Route path="/course/:id" element={<Course />} />
-                <Route path="/user" element={<UserControlPanel />} />
+                <Route path="/panel" element={<UserControlPanel />} />
                 <Route path="/user-profile" element={<UserProfile />} />
                 <Route path="/change-password" element={<ChangePassword />} />
             </Routes>

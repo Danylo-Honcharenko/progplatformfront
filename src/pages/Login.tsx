@@ -5,8 +5,6 @@ import {UserResponse} from "../type/response/UserResponse.ts";
 import {Link, Navigate} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
-import {AlertCircle} from "lucide-react";
 import {FieldErrorResponse} from "@/type/response/FieldErrorResponse.ts";
 import {
     AlertDialog,
@@ -15,6 +13,10 @@ import {
     AlertDialogTitle
 } from "@/components/ui/alert-dialog.tsx";
 import {UserService} from "@/services/UserService.ts";
+import {Spinner} from "@/components/ui/spinner.tsx";
+import {redirectTo} from "@/utils/redirectUtil.ts";
+import ErrorMessageBox from "@/components/ErrorMessageBox.tsx";
+import {fieldErrorHandler} from "@/utils/errorHandler.ts";
 
 
 const Login = () => {
@@ -35,57 +37,33 @@ const Login = () => {
 
             setUser(response.data);
         } catch (error) {
-            setError(error as Response<ErrorResponse<string>>);
+            fieldErrorHandler(error, setError);
             console.log(error);
         } finally {
             setLoading(false);
         }
     }
 
-    if (user !== undefined && user.status === 200 && user.data.role === "ROLE_USER") {
-        return <Navigate to="/user" replace/>
+    if (user?.status === 200) {
+        return <Navigate to={redirectTo(user.data?.role, "/panel")} replace/>
     }
-
-    if (user !== undefined && user.status === 200 && user.data.role === "ROLE_ADMIN") {
-        return <Navigate to="/user" replace />
-    }
-
-    const isBadRequestPasswordError = error !== undefined && error.status === 400 && typeof error?.data.details === "string";
-    const isUserNotFound = error !== undefined && error.status === 404;
 
     return (
         <div>
-            {loading ?
-                <div className="text-center p-3 bg-black text-white absolute w-full">
-                    <p>Завантаження...</p>
-                </div>
-                :
-                <></>
-            }
             <div className="form-container">
                 <div className="w-sm">
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center">Увійти</h3>
-                    {isUserNotFound ?
-                        <Alert variant="default" className="mt-4">
-                            <AlertCircle className="h-4 w-4"/>
-                            <AlertTitle>Повідомлення</AlertTitle>
-                            <AlertDescription className="flex flex-col gap-0.5">
-                                <p>{typeof error?.data.details === "string" ? error?.data.details : "Не вдалося відобразити повідомлення!"}</p>
-                            </AlertDescription>
-                        </Alert>
-                        :
-                        <></>
+                    {error !== undefined && error.status === 404 ?
+                        <ErrorMessageBox
+                            error={error}
+                        />
+                        : <></>
                     }
-                    {isBadRequestPasswordError ?
-                        <Alert variant="default" className="mt-4">
-                            <AlertCircle className="h-4 w-4"/>
-                            <AlertTitle>Повідомлення</AlertTitle>
-                            <AlertDescription className="flex flex-col gap-0.5">
-                                <p>{typeof error?.data.details === "string" ? error?.data.details : "Не вдалося відобразити повідомлення!"}</p>
-                            </AlertDescription>
-                        </Alert>
-                        :
-                        <></>
+                    {error !== undefined && error.status === 400 ?
+                        <ErrorMessageBox
+                            error={error}
+                        />
+                        : <></>
                     }
                     <form className="flex flex-col gap-3 mt-4" onSubmit={login}>
                         <Input
@@ -93,7 +71,7 @@ const Login = () => {
                             placeholder="E-mail"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={isUserNotFound ? "border-red-500 h-12" : "h-12"}
+                            className="h-12"
                             disabled={loading}
                         />
                         <Input
@@ -101,10 +79,11 @@ const Login = () => {
                             placeholder="Пароль"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className={isBadRequestPasswordError ? "border-red-500 h-12" : "h-12"}
+                            className="h-12"
                             disabled={loading}
+                            autoComplete="off"
                         />
-                        <Button className="h-11 cursor-pointer" disabled={loading}>Увійти</Button>
+                        <Button className="h-11 cursor-pointer" disabled={loading}>{loading ? <Spinner data-icon="inline-start" /> : "Увійти"}</Button>
                     </form>
                     <AlertDialog open={error !== undefined && error.status === 500}>
                         <AlertDialogContent>
@@ -117,18 +96,6 @@ const Login = () => {
                             </AlertDialogHeader>
                         </AlertDialogContent>
                     </AlertDialog>
-                    {error !== undefined && error.status === 400 && typeof error?.data.details === "object" ?
-                        <Alert variant="destructive" className="mt-4 border-red-500">
-                            <AlertCircle className="h-4 w-4"/>
-                            <AlertTitle>Помилка валідації вхідних параметрів</AlertTitle>
-                            <AlertDescription className="flex flex-col gap-0.5">
-                                <p>{error?.data.details.password}</p>
-                                <p>{error?.data.details.email}</p>
-                            </AlertDescription>
-                        </Alert>
-                        :
-                        <></>
-                    }
                     <div className="mt-3 text-center">
                         <div>
                             <p className="text-gray-400">Ще не маєте облікового запису?</p>
