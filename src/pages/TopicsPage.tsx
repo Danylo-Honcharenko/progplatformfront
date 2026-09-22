@@ -23,6 +23,7 @@ const TopicsPage = () => {
     const [moduleStat, setModuleState] = useState<Response<CreateModulStateResponse> | undefined>(undefined);
     const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
     const [topics, setTopics] = useState<Topics | undefined>(undefined);
+    const [loading, setLoading] = useState<boolean>(true);
     const [topic, setTopic] = useState<TopicModel | undefined>(undefined);
     const [pages, setPages] = useState<number[]>([]);
     const {user} = useAuth();
@@ -81,19 +82,25 @@ const TopicsPage = () => {
         const topicService = new TopicService();
         topicService.getTopicsByModuleId(id)
             .then((response) => {
-                // setTopics(response.data);
+                setTopics(response.data);
                 const pages = response.data.topics.map((topic) => topic.page);
                 setPages(pages);
                 setTopic(response.data.topics[0]);
             })
-            .catch((error) => baseErrorHandler(error, setError));
+            .catch((error) => baseErrorHandler(error, setError))
+            .finally(() => setLoading(false));
+
     }, []);
 
 
     return (
         <div className="flex flex-col h-screen items-center justify-center">
             <div className="shadow-lg rounded-lg p-5 w-1/2">
-                {topics !== undefined ?
+                {loading ?
+                    <div className="flex justify-center items-center">
+                        <Spinner className="size-8" />
+                    </div>
+                    :
                     <div>
                         <Button
                             variant="outline"
@@ -135,8 +142,7 @@ const TopicsPage = () => {
                                 >Тестування</Button>
                             </div>
                         </div>
-                    </div> :
-                    <Spinner data-icon="inline-start" />
+                    </div>
                 }
             </div>
         </div>

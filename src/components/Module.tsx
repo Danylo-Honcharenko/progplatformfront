@@ -20,7 +20,6 @@ const Module = ({module}: {module: ModuleModel}) => {
                     <Button
                         variant="outline"
                         className="cursor-pointer w-full"
-                        disabled={module.topics.length === 0}
                         onClick={() => {
                             // setTopics(module.topics);
                             // setOpen(true);

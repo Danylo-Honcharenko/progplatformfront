@@ -1,12 +1,12 @@
 import {axiosInstance} from "@/config/axios.ts";
 import {Response} from "@/type/response/Response.ts";
-import {CourseModel} from "@/type/model/CourseModel.ts";
 import {CoursesResponse} from "@/type/response/CoursesResponse.ts";
+import {CourseModel} from "@/type/model/CourseModel.ts";
 
 export class CourseService {
-    getCourseByIdWithUserStat = async (courseId: string | undefined): Promise<Response<CourseModel>> => {
+    getCourseById = async (id: string): Promise<Response<CourseModel>> => {
         try {
-            const response = await axiosInstance.get(`/course/${courseId}/user/stat`, {withCredentials: true});
+            const response = await axiosInstance.get(`/course/${id}`, {withCredentials: true});
             return response.data;
         } catch (error) {
             throw error;
