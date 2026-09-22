@@ -1,5 +1,6 @@
 import {Button} from "@/components/ui/button.tsx";
 import {ModuleModel} from "@/type/model/ModuleModel.ts";
+import {Link} from "react-router-dom";
 
 const Module = ({module}: {module: ModuleModel}) => {
     return (
@@ -15,17 +16,19 @@ const Module = ({module}: {module: ModuleModel}) => {
                     </div>
                 </div>
                 <p>{module.description}</p>
-                <Button
-                    variant="outline"
-                    className="cursor-pointer"
-                    disabled={module.topics.length === 0}
-                    onClick={() => {
-                    // setTopics(module.topics);
-                    // setOpen(true);
-                    // setTopic(module.topics[0]);
-                    // setModule(module);
-                    }}
-                >Перейти</Button>
+                <Link to={`/topics/${module.id}`}>
+                    <Button
+                        variant="outline"
+                        className="cursor-pointer w-full"
+                        disabled={module.topics.length === 0}
+                        onClick={() => {
+                            // setTopics(module.topics);
+                            // setOpen(true);
+                            // setTopic(module.topics[0]);
+                            // setModule(module);
+                        }}
+                    >Перейти</Button>
+                </Link>
             </div>
         </div>
     );

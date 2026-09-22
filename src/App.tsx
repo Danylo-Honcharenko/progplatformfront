@@ -8,6 +8,7 @@ import CoursePage from "@/pages/CoursePage.tsx";
 import UserPanel from "@/pages/UserPanel.tsx";
 import ChangePassword from "@/pages/ChangePassword.tsx";
 import UserProfile from "@/pages/UserProfile.tsx";
+import TopicsPage from "@/pages/TopicsPage.tsx";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/registration" element={<Registration />} />
                 <Route path="/course/:id" element={<CoursePage />} />
+                <Route path="/topics/:id" element={<TopicsPage />} />
                 <Route path="/panel" element={<UserPanel />} />
                 <Route path="/user-profile" element={<UserProfile />} />
                 <Route path="/change-password" element={<ChangePassword />} />

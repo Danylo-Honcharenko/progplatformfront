@@ -4,29 +4,31 @@ import {Separator} from "@/components/ui/separator.tsx";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import ReactMarkdown from "react-markdown";
 import {CODE, H2, P, PRE, UL} from "@/utils/markDwmStyle.tsx";
-import {TopicModel} from "@/type/model/TopicModel.ts";
-import {ModuleService} from "@/services/ModuleService.ts";
 import {baseErrorHandler} from "@/utils/errorHandler.ts";
 import {useEffect, useState} from "react";
 import {Response} from "@/type/response/Response.ts";
 import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
-import {UserResponse} from "@/type/response/UserResponse.ts";
+import {TopicService} from "@/services/TopicService.ts";
+import {Topics} from "@/type/model/TopicsModel.ts";
+import {TopicModel} from "@/type/model/TopicModel.ts";
+import useAuth from "@/hooks/useAuth.tsx";
+import {ModuleService} from "@/services/ModuleService.ts";
 import {CreateModulStateResponse} from "@/type/response/CreateModulStateResponse.ts";
-import {ModuleModel} from "@/type/model/ModuleModel.ts";
+import {useNavigate, useParams} from "react-router-dom";
+import {Spinner} from "@/components/ui/spinner.tsx";
 
-type Props = {
-    topics: TopicModel[] | undefined;
-    user: UserResponse | undefined;
-    activeTopic: TopicModel | undefined;
-    module: ModuleModel | undefined;
-};
 
-const Topic = ({topics, user, module}: Props) => {
+const TopicsPage = () => {
 
-    const [moduleState, setModuleState] = useState<Response<CreateModulStateResponse> | undefined>(undefined);
-    const [_, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+    const [moduleStat, setModuleState] = useState<Response<CreateModulStateResponse> | undefined>(undefined);
+    const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+    const [topics, setTopics] = useState<Topics | undefined>(undefined);
     const [topic, setTopic] = useState<TopicModel | undefined>(undefined);
+    const [pages, setPages] = useState<number[]>([]);
+    const {user} = useAuth();
+    const navigate = useNavigate();
 
+    let {id} = useParams();
 
     const setDone = async (topicId: number | undefined, moduleId: number | undefined, userId: number | undefined) => {
         if (topicId === undefined || moduleId === undefined || userId === undefined) return;
@@ -42,7 +44,7 @@ const Topic = ({topics, user, module}: Props) => {
     }
 
     const setActiveTopic = (page: number) => {
-        const topic = topics?.find((topic) => topic.page === page);
+        const topic = topics?.topics.find((topic) => topic.page === page);
         setTopic(topic);
     }
 
@@ -73,7 +75,19 @@ const Topic = ({topics, user, module}: Props) => {
         //     })
         //     setTopic(topic);
         // }
-    }, [moduleState]);
+
+        if (id === undefined) return;
+
+        const topicService = new TopicService();
+        topicService.getTopicsByModuleId(id)
+            .then((response) => {
+                // setTopics(response.data);
+                const pages = response.data.topics.map((topic) => topic.page);
+                setPages(pages);
+                setTopic(response.data.topics[0]);
+            })
+            .catch((error) => baseErrorHandler(error, setError));
+    }, []);
 
 
     return (
@@ -81,13 +95,14 @@ const Topic = ({topics, user, module}: Props) => {
             <div className="shadow-lg rounded-lg p-5 w-1/2">
                 {topics !== undefined ?
                     <div>
-                        <Button variant="outline" className="mt-4 cursor-pointer" onClick={() => {
-                            // setTopics(undefined);
-                            // setOpen(false);
-                        }}>Назад</Button>
+                        <Button
+                            variant="outline"
+                            className="mt-4 cursor-pointer"
+                            onClick={() => navigate(-1)}
+                        >Назад</Button>
                         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mt-4">{topic?.name}</h3>
                         <Button className="mt-3 cursor-pointer" variant="outline" disabled={topic?.done}
-                                onClick={() => setDone(topic?.id, undefined, user?.id)}><CheckCheck/></Button>
+                                onClick={() => setDone(topic?.id, undefined, user?.data.id)}><CheckCheck/></Button>
                         <Separator className="mt-3"/>
                         <ScrollArea className="h-[450px]">
                             <ReactMarkdown components={{
@@ -100,7 +115,7 @@ const Topic = ({topics, user, module}: Props) => {
                         </ScrollArea>
                         <div className="flex justify-between mt-3">
                             <div className="flex gap-2 items-center">
-                                {module?.pages.map((page) => (
+                                {pages.map((page) => (
                                     <div key={page}>
                                         <Button
                                             variant={page === topic?.page ? "default" : "outline"}
@@ -121,11 +136,11 @@ const Topic = ({topics, user, module}: Props) => {
                             </div>
                         </div>
                     </div> :
-                    <></>
+                    <Spinner data-icon="inline-start" />
                 }
             </div>
         </div>
     );
 };
 
-export default Topic;
+export default TopicsPage;
