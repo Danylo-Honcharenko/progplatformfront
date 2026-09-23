@@ -90,7 +90,7 @@ const Login = () => {
                             <AlertDialogHeader>
                                 <AlertDialogTitle className="text-red-500">Помилка серверу</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    <p>{typeof error?.data.details === "string" ? error?.data.details : "Не вдалося відобразити помилку!"}</p>
+                                    <p>{typeof error?.data.details === "string" ? error?.data.details : "Невідома помилка!"}</p>
                                     <p className="text-black mt-3">MSID: {error?.data.msid}</p>
                                 </AlertDialogDescription>
                             </AlertDialogHeader>

@@ -2,7 +2,12 @@ import {Button} from "@/components/ui/button.tsx";
 import {ModuleModel} from "@/type/model/ModuleModel.ts";
 import {Link} from "react-router-dom";
 
-const Module = ({module}: {module: ModuleModel}) => {
+type Props = {
+    module: ModuleModel,
+    courseId: string | undefined
+};
+
+const Module = ({module, courseId}: Props) => {
     return (
         <div className="flex flex-col gap-5">
             <div
@@ -16,16 +21,10 @@ const Module = ({module}: {module: ModuleModel}) => {
                     </div>
                 </div>
                 <p>{module.description}</p>
-                <Link to={`/topics/${module.id}`}>
+                <Link to={`/course/${courseId}/module/${module.id}/topic?page=1`}>
                     <Button
                         variant="outline"
                         className="cursor-pointer w-full"
-                        onClick={() => {
-                            // setTopics(module.topics);
-                            // setOpen(true);
-                            // setTopic(module.topics[0]);
-                            // setModule(module);
-                        }}
                     >Перейти</Button>
                 </Link>
             </div>

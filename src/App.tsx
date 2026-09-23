@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
 import './style/App.scss'
@@ -12,22 +12,42 @@ import TopicsPage from "@/pages/TopicsPage.tsx";
 
 function App() {
 
-  return (
-    <>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" index element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/registration" element={<Registration />} />
-                <Route path="/course/:id" element={<CoursePage />} />
-                <Route path="/topics/:id" element={<TopicsPage />} />
-                <Route path="/panel" element={<UserPanel />} />
-                <Route path="/user-profile" element={<UserProfile />} />
-                <Route path="/change-password" element={<ChangePassword />} />
-            </Routes>
-        </BrowserRouter>
-    </>
-  )
+    const router = createBrowserRouter([
+        {
+            path: "/",
+            Component: Home,
+        },
+        {
+            path: "/login",
+            Component: Login,
+        },
+        {
+            path: "/registration",
+            Component: Registration,
+        },
+        {
+            path: "/course/:courseId",
+            Component: CoursePage,
+        },
+        {
+            path: "/course/:courseId/module/:moduleId/topic",
+            Component: TopicsPage,
+        },
+        {
+            path: "/panel",
+            Component: UserPanel
+        },
+        {
+            path: "/user-profile",
+            Component: UserProfile
+        },
+        {
+            path: "/change-password",
+            Component: ChangePassword
+        }
+    ]);
+
+    return <RouterProvider router={router} />;
 }
 
 export default App

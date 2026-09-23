@@ -11,17 +11,24 @@ import {ModuleService} from "@/services/ModuleService.ts";
 import Module from "@/components/Module.tsx";
 import {ModuleModel} from "@/type/model/ModuleModel.ts";
 import useAuth from "@/hooks/useAuth.tsx";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from "@/components/ui/alert-dialog.tsx";
 
 const CoursePage = () => {
 
     const [course, setCourse] = useState<CourseModel | undefined>(undefined);
     const [modules, setModules] = useState<ModuleModel[]>([]);
     const [loadingCourse, setLoadingCourse] = useState<boolean>(true);
-    const [_, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+    const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
 
     const {notAuthorized} = useAuth();
 
-    let {id} = useParams();
+    let {courseId} = useParams();
 
     const loadCourse = async (courseId: string | undefined) => {
         if (courseId === undefined) return;
@@ -33,7 +40,7 @@ const CoursePage = () => {
             const response = await Promise.all([
                 await courseService.getCourseById(courseId),
                 await moduleService.getModulesByCourseId(courseId)
-            ])
+            ]);
 
             setCourse(response[0].data);
             setModules(response[1].data.modules);
@@ -47,41 +54,55 @@ const CoursePage = () => {
 
     useEffect(() => {
 
-        loadCourse(id).then();
+        loadCourse(courseId).then();
 
     }, []);
 
     if (notAuthorized) return <Navigate to="/login" replace/>
 
     return (
-        <div className="flex flex-col h-screen items-center gap-5 justify-center">
-            <div>
+        <>
+            <div className="flex flex-col h-screen items-center gap-5 justify-center">
+                <div>
+                    {loadingCourse ?
+                        <Skeleton className="w-40 h-6"/>
+                        :
+                        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{course?.name}</h3>
+                    }
+                </div>
                 {loadingCourse ?
-                    <Skeleton className="w-40 h-6"/>
+                    <div className="flex gap-6 flex-wrap justify-center">
+                        {Array.from({length: 3}, (_, i) => i).map((i) => (
+                            <Skeleton key={i} className="w-[410px] h-80 rounded-lg"/>
+                        ))}
+                    </div>
                     :
-                    <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{course?.name}</h3>
+                    <div className="flex gap-6 flex-wrap justify-center">
+                        {modules.map((module) => (
+                            <Module
+                                module={module}
+                                key={module.id}
+                                courseId={courseId}
+                            />
+                        ))}
+                    </div>
                 }
+                <Button asChild variant="link" className="p-0">
+                    <Link to="/panel" replace>До особистого кабінету</Link>
+                </Button>
             </div>
-            {loadingCourse ?
-                <div className="flex gap-6 flex-wrap justify-center">
-                    {Array.from({length: 3}, (_, i) => i).map((i) => (
-                        <Skeleton key={i} className="w-[410px] h-80 rounded-lg"/>
-                    ))}
-                </div>
-                :
-                <div className="flex gap-6 flex-wrap justify-center">
-                    {modules.map((module) => (
-                        <Module
-                            module={module}
-                            key={module.id}
-                        />
-                    ))}
-                </div>
-            }
-            <Button asChild variant="link" className="p-0">
-                <Link to="/panel" replace>До особистого кабінету</Link>
-            </Button>
-        </div>
+            <AlertDialog open={error !== undefined && error.status === 500}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-red-500">Помилка серверу</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            <p>{typeof error?.data.details === "string" ? error?.data.details : "Невідома помилка!"}</p>
+                            <p className="text-black mt-3">MSID: {error?.data.msid}</p>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
     );
 };
 

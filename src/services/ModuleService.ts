@@ -13,7 +13,7 @@ export class ModuleService {
         }
     }
 
-    setCompletedTopic = async (moduleId: number | undefined, topicId: number, userId: number | undefined): Promise<Response<CreateModulStateResponse>> => {
+    setCompletedTopic = async (moduleId: string | undefined, topicId: number, userId: number | undefined): Promise<Response<CreateModulStateResponse>> => {
         try {
             const request = {
                 moduleId: moduleId,
@@ -21,7 +21,7 @@ export class ModuleService {
                 userId: userId
             };
 
-            const response = await axiosInstance.post("/module/setCompletedTopic", request);
+            const response = await axiosInstance.post("/module/setCompletedTopic", request, {withCredentials: true});
             return response.data;
         } catch (error) {
             throw error;
