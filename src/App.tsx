@@ -9,6 +9,7 @@ import UserPanel from "@/pages/UserPanel.tsx";
 import ChangePassword from "@/pages/ChangePassword.tsx";
 import UserProfile from "@/pages/UserProfile.tsx";
 import TopicsPage from "@/pages/TopicsPage.tsx";
+import Panel from "@/components/Panel.tsx";
 
 function App() {
 
@@ -35,11 +36,17 @@ function App() {
         },
         {
             path: "/panel",
-            Component: UserPanel
-        },
-        {
-            path: "/user-profile",
-            Component: UserProfile
+            Component: Panel,
+            children: [
+                {
+                    index: true,
+                    Component: UserPanel
+                },
+                {
+                    path: "user-profile",
+                    Component: UserProfile
+                }
+            ]
         },
         {
             path: "/change-password",

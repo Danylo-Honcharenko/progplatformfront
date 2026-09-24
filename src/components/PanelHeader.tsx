@@ -16,13 +16,11 @@ import {UserResponse} from "@/type/response/UserResponse.ts";
 import {Response} from "@/type/response/Response.ts";
 
 type Props = {
-    title: string,
     user: Response<UserResponse> | undefined,
-    loading: boolean,
-    isProfilePage?: boolean
+    loading: boolean
 };
 
-const PanelHeader = ({title, isProfilePage, user, loading}: Props) => {
+const PanelHeader = ({user, loading}: Props) => {
 
     const [isLogout, setIsLogout] = useState<boolean>(false);
 
@@ -40,9 +38,9 @@ const PanelHeader = ({title, isProfilePage, user, loading}: Props) => {
 
     return (
         <>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pl-35 pr-35 pt-3">
                 <div>
-                    <h2 className="text-xl">{title}</h2>
+                    <h2 className="text-xl">Панель користувача</h2>
                 </div>
                 <div>
                     <DropdownMenu>
@@ -53,7 +51,7 @@ const PanelHeader = ({title, isProfilePage, user, loading}: Props) => {
                             <DropdownMenuLabel><Badge>{user?.data.levelAlias}</Badge>Рівень: {user?.data.level}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                <Link to="/user-profile" replace>
+                                <Link to="user-profile">
                                     <DropdownMenuItem>
                                         <User/>
                                         <span>Профіль</span>
@@ -64,20 +62,16 @@ const PanelHeader = ({title, isProfilePage, user, loading}: Props) => {
                                     <span>Вийти</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <Link to="/" replace>
+                                <Link to="/">
                                     <DropdownMenuItem>
                                         <Home/><span>На головну</span>
                                     </DropdownMenuItem>
                                 </Link>
-                                {isProfilePage ?
-                                    <Link to="/panel" replace>
-                                        <DropdownMenuItem>
-                                            <ArrowLeft/><span>До панелі користувача</span>
-                                        </DropdownMenuItem>
-                                    </Link>
-                                    :
-                                    <></>
-                                }
+                                <Link to="/panel" replace>
+                                    <DropdownMenuItem>
+                                        <ArrowLeft/><span>До панелі користувача</span>
+                                    </DropdownMenuItem>
+                                </Link>
                             </DropdownMenuGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
