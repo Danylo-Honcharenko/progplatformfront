@@ -6,13 +6,7 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {
-    AlertDialog,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogHeader,
-    AlertDialogTitle
-} from "@/components/ui/alert-dialog.tsx";
+import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
 const ChangePassword = () => {
 
@@ -84,17 +78,11 @@ const ChangePassword = () => {
                         />
                         <Button className="h-11 cursor-pointer" disabled={loading}>Змінити</Button>
                     </form>
-                    <AlertDialog open={error !== undefined && error.status === 500}>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle className="text-red-500">Помилка серверу</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    <p>{typeof error?.data.details === "string" ? error?.data.details : "Невідома помилка!"}</p>
-                                    <p className="text-black mt-3">MSID: {error?.data.msid}</p>
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                        </AlertDialogContent>
-                    </AlertDialog>
+
+                    <ServerErrorDialog
+                        error={error}
+                    />
+
                     {error !== undefined && error.status === 400 && typeof error?.data.details === "object" ?
                         <Alert variant="destructive" className="mt-4 border-red-500">
                             <AlertCircle className="h-4 w-4"/>

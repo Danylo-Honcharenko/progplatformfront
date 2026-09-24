@@ -11,13 +11,7 @@ import {ModuleService} from "@/services/ModuleService.ts";
 import Module from "@/components/Module.tsx";
 import {ModuleModel} from "@/type/model/ModuleModel.ts";
 import useAuth from "@/hooks/useAuth.tsx";
-import {
-    AlertDialog,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogHeader,
-    AlertDialogTitle
-} from "@/components/ui/alert-dialog.tsx";
+import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
 const CoursePage = () => {
 
@@ -72,7 +66,8 @@ const CoursePage = () => {
                 </div>
                 {loadingCourse ?
                     <div className="flex gap-6 flex-wrap justify-center">
-                        {Array.from({length: 3}, (_, i) => i).map((i) => (
+                        {Array.from({length: 3}, (_, i) => i)
+                            .map((i) => (
                             <Skeleton key={i} className="w-[410px] h-80 rounded-lg"/>
                         ))}
                     </div>
@@ -91,17 +86,11 @@ const CoursePage = () => {
                     <Link to="/panel" replace>До особистого кабінету</Link>
                 </Button>
             </div>
-            <AlertDialog open={error !== undefined && error.status === 500}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle className="text-red-500">Помилка серверу</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            <p>{typeof error?.data.details === "string" ? error?.data.details : "Невідома помилка!"}</p>
-                            <p className="text-black mt-3">MSID: {error?.data.msid}</p>
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                </AlertDialogContent>
-            </AlertDialog>
+
+            <ServerErrorDialog
+                error={error}
+            />
+
         </>
     );
 };

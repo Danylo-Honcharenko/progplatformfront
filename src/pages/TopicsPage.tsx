@@ -14,15 +14,9 @@ import useAuth from "@/hooks/useAuth.tsx";
 import {ModuleService} from "@/services/ModuleService.ts";
 import {Link, Navigate, useParams, useSearchParams} from "react-router-dom";
 import {Spinner} from "@/components/ui/spinner.tsx";
-import {
-    AlertDialog,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogHeader,
-    AlertDialogTitle
-} from "@/components/ui/alert-dialog.tsx";
 import NotAuthorizedDialog from "@/components/NotAuthorizedDialog.tsx";
 import BadRequestDialog from "@/components/BadRequestDialog.tsx";
+import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
 
 const TopicsPage = () => {
@@ -142,17 +136,9 @@ const TopicsPage = () => {
                 </div>
             </div>
 
-            <AlertDialog open={error !== undefined && error.status === 500}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle className="text-red-500">Помилка серверу</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            <p>{typeof error?.data.details === "string" ? error?.data.details : "Невідома помилка!"}</p>
-                            <p className="text-black mt-3">MSID: {error?.data.msid}</p>
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                </AlertDialogContent>
-            </AlertDialog>
+            <ServerErrorDialog
+                error={error}
+            />
 
             <BadRequestDialog
                 error={error}

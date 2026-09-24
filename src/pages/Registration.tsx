@@ -4,13 +4,12 @@ import {Response} from "../type/response/Response.ts";
 import {ErrorResponse} from "../type/response/ErrorResponse.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {AlertCircle} from "lucide-react";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {FieldErrorResponse} from "@/type/response/FieldErrorResponse.ts";
 import {UserService} from "@/services/UserService.ts";
 import ErrorMessageBox from "@/components/ErrorMessageBox.tsx";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {fieldErrorHandler} from "@/utils/errorHandler.ts";
+import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
 const Registration = () => {
     const [statusCode, setStatusCode] = useState<number>(0);
@@ -93,16 +92,6 @@ const Registration = () => {
                         <p className="text-gray-400">Вже маєте акаунт?</p>
                         <Button asChild variant="link"><Link to="/login" replace>Увійти</Link></Button>
                     </div>
-                    {error !== undefined && typeof error?.data.details === "string" && error.status === 500 ?
-                        <Alert variant="destructive" className="mt-4 border-red-500">
-                            <AlertCircle className="h-4 w-4"/>
-                            <AlertTitle>Помилка</AlertTitle>
-                            <AlertDescription>
-                                {error?.data.details}
-                            </AlertDescription>
-                        </Alert>
-                        : <></>
-                    }
                     {error !== undefined && error.status === 400 ?
                         <ErrorMessageBox
                             error={error}
@@ -112,6 +101,11 @@ const Registration = () => {
                     }
                 </div>
             </div>
+
+            <ServerErrorDialog
+                error={error}
+            />
+
         </div>
     );
 };

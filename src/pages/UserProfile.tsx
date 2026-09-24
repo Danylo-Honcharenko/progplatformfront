@@ -1,10 +1,11 @@
 import useAuth from "@/hooks/useAuth.tsx";
 import {Badge} from "lucide-react";
 import {Navigate} from "react-router-dom";
+import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
 const UserProfile = () => {
 
-    const {user, notAuthorized} = useAuth();
+    const {user, notAuthorized, authError: error} = useAuth();
 
     if (notAuthorized) return <Navigate to="/login" replace/>;
 
@@ -49,6 +50,11 @@ const UserProfile = () => {
                         "Професіонал"</p>
                 </div>
             </div>
+
+            <ServerErrorDialog
+                error={error}
+            />
+
         </div>
     );
 };

@@ -6,17 +6,12 @@ import {Link, Navigate} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {FieldErrorResponse} from "@/type/response/FieldErrorResponse.ts";
-import {
-    AlertDialog,
-    AlertDialogContent, AlertDialogDescription,
-    AlertDialogHeader,
-    AlertDialogTitle
-} from "@/components/ui/alert-dialog.tsx";
 import {UserService} from "@/services/UserService.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {redirectTo} from "@/utils/redirectUtil.ts";
 import ErrorMessageBox from "@/components/ErrorMessageBox.tsx";
 import {fieldErrorHandler} from "@/utils/errorHandler.ts";
+import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
 
 const Login = () => {
@@ -85,17 +80,7 @@ const Login = () => {
                         />
                         <Button className="h-11 cursor-pointer" disabled={loading}>{loading ? <Spinner data-icon="inline-start" /> : "Увійти"}</Button>
                     </form>
-                    <AlertDialog open={error !== undefined && error.status === 500}>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle className="text-red-500">Помилка серверу</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    <p>{typeof error?.data.details === "string" ? error?.data.details : "Невідома помилка!"}</p>
-                                    <p className="text-black mt-3">MSID: {error?.data.msid}</p>
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                        </AlertDialogContent>
-                    </AlertDialog>
+
                     <div className="mt-3 text-center">
                         <div>
                             <p className="text-gray-400">Ще не маєте облікового запису?</p>
@@ -104,6 +89,11 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+
+            <ServerErrorDialog
+                error={error}
+            />
+
         </div>
     );
 };
