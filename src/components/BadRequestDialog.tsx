@@ -17,6 +17,7 @@ type Props = {
 };
 
 const BadRequestDialog = ({error}: Props) => {
+
     const [currentError, setCurrentError] = useState<Error>();
     const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(false);
 
@@ -35,7 +36,7 @@ const BadRequestDialog = ({error}: Props) => {
                 <AlertDialogHeader>
                     <AlertDialogTitle>Помилка</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {typeof currentError?.data?.details === "string" ? currentError?.data.details : "Невідома помилка!"}
+                        {typeof currentError?.data.details === "string" ? currentError?.data.details : "Невідома помилка!"}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

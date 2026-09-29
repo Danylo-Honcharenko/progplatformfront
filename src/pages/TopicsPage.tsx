@@ -143,7 +143,7 @@ const TopicsPage = () => {
             />
 
             <BadRequestDialog
-                error={error}
+                error={[error]}
             />
 
             <NotAuthorizedDialog

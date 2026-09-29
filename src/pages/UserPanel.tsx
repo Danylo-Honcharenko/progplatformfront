@@ -12,7 +12,7 @@ const UserPanel = () => {
 
     if (notAuthorized) return <Navigate to="/login" replace/>;
 
-    const coursesAmount = courses?.data?.courses?.length;
+    const coursesAmount = courses?.data.courses.length;
 
     return (
         <>

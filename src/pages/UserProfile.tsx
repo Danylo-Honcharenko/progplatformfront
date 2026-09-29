@@ -5,15 +5,15 @@ import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
 const UserProfile = () => {
 
-    const {user, notAuthorized, authError: error} = useAuth();
+    const {user, notAuthorized, authError} = useAuth();
 
     if (notAuthorized) return <Navigate to="/login" replace/>;
 
     return (
         <div>
             <div className="mt-3 bg-zinc-50 p-3 rounded-lg">
-                <h4 className="scroll-m-20 text-2xl tracking-tight">{user?.data?.lastName} {user?.data?.firstName}</h4>
-                <p className="mt-2">{user?.data?.email}</p>
+                <h4 className="scroll-m-20 text-2xl tracking-tight">{user?.data.lastName} {user?.data.firstName}</h4>
+                <p className="mt-2">{user?.data.email}</p>
             </div>
             <div className="mt-4 bg-zinc-50 p-3 rounded-lg">
                 <div>
@@ -22,7 +22,7 @@ const UserProfile = () => {
                 </div>
                 <div className="mt-2">
                     <p>Ваш поточний
-                        рівень: {user?.data?.level} <Badge>{user?.data?.levelAlias}</Badge></p>
+                        рівень: {user?.data.level} <Badge>{user?.data.levelAlias}</Badge></p>
                 </div>
                 <div className="mt-2">
                     <h3 className="text-xl">Можливі рівнів</h3>
@@ -52,7 +52,7 @@ const UserProfile = () => {
             </div>
 
             <ServerErrorDialog
-                error={[error]}
+                error={[authError]}
             />
 
         </div>

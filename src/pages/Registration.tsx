@@ -103,7 +103,7 @@ const Registration = () => {
             </div>
 
             <ServerErrorDialog
-                error={error}
+                error={[error]}
             />
 
         </div>

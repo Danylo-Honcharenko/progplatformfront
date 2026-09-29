@@ -38,8 +38,8 @@ const Login = () => {
         }
     }
 
-    if (user?.status === 200 && user.data) {
-        return <Navigate to={redirectTo(user.data.role, "/panel")} replace/>
+    if (user?.status === 200) {
+        return <Navigate to={redirectTo(user?.data.role, "/panel")} replace/>
     }
 
     return (
@@ -90,7 +90,7 @@ const Login = () => {
             </div>
 
             <ServerErrorDialog
-                error={error}
+                error={[error]}
             />
 
         </div>
