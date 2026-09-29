@@ -1,7 +1,7 @@
 import useAuth from "@/hooks/useAuth.tsx";
 import {Badge} from "lucide-react";
 import {Navigate} from "react-router-dom";
-import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
+import ErrorDialog from "@/components/ErrorDialog.tsx";
 
 const UserProfile = () => {
 
@@ -51,8 +51,10 @@ const UserProfile = () => {
                 </div>
             </div>
 
-            <ServerErrorDialog
-                error={[authError]}
+
+            <ErrorDialog
+                code={[authError?.code]}
+                statusCodes={[authError?.status]}
             />
 
         </div>

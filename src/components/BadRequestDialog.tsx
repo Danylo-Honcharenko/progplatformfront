@@ -6,29 +6,11 @@ import {
     AlertDialogTitle
 } from "@/components/ui/alert-dialog.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {Response} from "@/type/response/Response.ts";
-import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
-type Error = Response<ErrorResponse<string>> | undefined;
+const BadRequestDialog = () => {
 
-type Props = {
-    error: Error[]
-};
-
-const BadRequestDialog = ({error}: Props) => {
-
-    const [currentError, setCurrentError] = useState<Error>();
-    const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (error === undefined) return;
-        const badRequestErrors = error?.filter((err) => err?.status === 400);
-        if (badRequestErrors.length != 0) {
-            setOpenErrorDialog(true);
-            setCurrentError(badRequestErrors[0]);
-        }
-    }, [error]);
+    const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(true);
 
     return (
         <AlertDialog open={openErrorDialog}>
@@ -36,7 +18,7 @@ const BadRequestDialog = ({error}: Props) => {
                 <AlertDialogHeader>
                     <AlertDialogTitle>Помилка</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {typeof currentError?.data.details === "string" ? currentError?.data.details : "Невідома помилка!"}
+                        Не вдалось обробити запит! Спробуйте ще раз
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

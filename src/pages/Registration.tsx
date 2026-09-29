@@ -1,19 +1,17 @@
 import {Link} from "react-router-dom";
 import {ChangeEvent, useState} from "react";
-import {Response} from "../type/response/Response.ts";
-import {ErrorResponse} from "../type/response/ErrorResponse.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {FieldErrorResponse} from "@/type/response/FieldErrorResponse.ts";
 import {UserService} from "@/services/UserService.ts";
 import ErrorMessageBox from "@/components/ErrorMessageBox.tsx";
 import {Spinner} from "@/components/ui/spinner.tsx";
-import {fieldErrorHandler} from "@/utils/errorHandler.ts";
-import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
+import {parsFieldError} from "@/utils/errorParser.ts";
+import {ErrorType} from "@/type/ErrorType.ts";
+import ErrorDialog from "@/components/ErrorDialog.tsx";
 
 const Registration = () => {
     const [statusCode, setStatusCode] = useState<number>(0);
-    const [error, setError] = useState<Response<ErrorResponse<string | FieldErrorResponse>> | undefined>(undefined);
+    const [error, setError] = useState<ErrorType | undefined>(undefined);
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
@@ -29,7 +27,8 @@ const Registration = () => {
             const status = await userService.registration(firstName, lastName, email, password);
             setStatusCode(status);
         } catch (error) {
-            fieldErrorHandler(error, setError);
+            const parsedError = parsFieldError(error);
+            setError(parsedError);
             console.log(error);
         } finally {
             setLoading(false);
@@ -94,7 +93,7 @@ const Registration = () => {
                     </div>
                     {error !== undefined && error.status === 400 ?
                         <ErrorMessageBox
-                            error={error}
+                            error={error.errorBody}
                         />
                         :
                         <></>
@@ -102,8 +101,9 @@ const Registration = () => {
                 </div>
             </div>
 
-            <ServerErrorDialog
-                error={[error]}
+            <ErrorDialog
+                code={[error?.code]}
+                statusCodes={[error?.status]}
             />
 
         </div>

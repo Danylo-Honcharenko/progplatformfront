@@ -1,22 +1,21 @@
 import {useState, ChangeEvent} from "react";
 import {Response} from "../type/response/Response.ts";
-import {ErrorResponse} from "../type/response/ErrorResponse.ts";
 import {UserResponse} from "../type/response/UserResponse.ts";
 import {Link, Navigate} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {FieldErrorResponse} from "@/type/response/FieldErrorResponse.ts";
 import {UserService} from "@/services/UserService.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {redirectTo} from "@/utils/redirectUtil.ts";
 import ErrorMessageBox from "@/components/ErrorMessageBox.tsx";
-import {fieldErrorHandler} from "@/utils/errorHandler.ts";
-import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
+import {parsFieldError} from "@/utils/errorParser.ts";
+import {ErrorType} from "@/type/ErrorType.ts";
+import ErrorDialog from "@/components/ErrorDialog.tsx";
 
 const Login = () => {
 
     const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
-    const [error, setError] = useState<Response<ErrorResponse<string | FieldErrorResponse>> | undefined>(undefined);
+    const [error, setError] = useState<ErrorType | undefined>(undefined);
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -31,7 +30,8 @@ const Login = () => {
 
             setUser(response.data);
         } catch (error) {
-            fieldErrorHandler(error, setError);
+            const handleError = parsFieldError(error);
+            setError(handleError);
             console.log(error);
         } finally {
             setLoading(false);
@@ -49,13 +49,13 @@ const Login = () => {
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center">Увійти</h3>
                     {error !== undefined && error.status === 404 ?
                         <ErrorMessageBox
-                            error={error}
+                            error={error.errorBody}
                         />
                         : <></>
                     }
                     {error !== undefined && error.status === 400 ?
                         <ErrorMessageBox
-                            error={error}
+                            error={error.errorBody}
                         />
                         : <></>
                     }
@@ -89,8 +89,9 @@ const Login = () => {
                 </div>
             </div>
 
-            <ServerErrorDialog
-                error={[error]}
+            <ErrorDialog
+                code={[error?.code]}
+                statusCodes={[error?.status]}
             />
 
         </div>

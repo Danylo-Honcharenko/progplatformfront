@@ -8,10 +8,10 @@ import {
 import {Button} from "@/components/ui/button.tsx";
 import {Link} from "react-router-dom";
 
-const NotAuthorizedDialog = ({notAuth}: {notAuth: boolean}) => {
+const NotAuthorizedDialog = () => {
 
     return (
-        <AlertDialog open={notAuth}>
+        <AlertDialog open={true}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Помилка авторизації</AlertDialogTitle>

@@ -4,23 +4,20 @@ import {Separator} from "@/components/ui/separator.tsx";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import ReactMarkdown from "react-markdown";
 import {CODE, H2, P, PRE, UL} from "@/utils/markDwmStyle.tsx";
-import {baseErrorHandler} from "@/utils/errorHandler.ts";
+import {parsError} from "@/utils/errorParser.ts";
 import {useEffect, useState} from "react";
-import {Response} from "@/type/response/Response.ts";
-import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
 import {TopicService} from "@/services/TopicService.ts";
 import {TopicModel} from "@/type/model/TopicModel.ts";
 import useAuth from "@/hooks/useAuth.tsx";
 import {ModuleService} from "@/services/ModuleService.ts";
 import {Link, Navigate, useParams, useSearchParams} from "react-router-dom";
 import {Spinner} from "@/components/ui/spinner.tsx";
-import NotAuthorizedDialog from "@/components/NotAuthorizedDialog.tsx";
-import BadRequestDialog from "@/components/BadRequestDialog.tsx";
-import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
+import {ErrorType} from "@/type/ErrorType.ts";
+import ErrorDialog from "@/components/ErrorDialog.tsx";
 
 const TopicsPage = () => {
 
-    const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+    const [error, setError] = useState<ErrorType | undefined>(undefined);
     const [topics, setTopics] = useState<TopicModel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [topic, setTopic] = useState<TopicModel | undefined>(undefined);
@@ -46,7 +43,8 @@ const TopicsPage = () => {
                 })
             ]);
         } catch (error) {
-            baseErrorHandler(error, setError);
+            const parsedError = parsError(error);
+            setError(parsedError);
             console.log(error);
         }
     }
@@ -69,7 +67,10 @@ const TopicsPage = () => {
                 setTopics(responseTopics);
                 setPages(pages);
             })
-            .catch((error) => baseErrorHandler(error, setError))
+            .catch((error) => {
+                const parsedError = parsError(error);
+                setError(parsedError);
+            })
             .finally(() => setLoading(false));
 
     }, []);
@@ -138,16 +139,9 @@ const TopicsPage = () => {
                 </div>
             </div>
 
-            <ServerErrorDialog
-                error={[error]}
-            />
-
-            <BadRequestDialog
-                error={[error]}
-            />
-
-            <NotAuthorizedDialog
-                notAuth={error?.status === 401}
+            <ErrorDialog
+                code={[error?.code]}
+                statusCodes={[error?.status]}
             />
         </>
     );

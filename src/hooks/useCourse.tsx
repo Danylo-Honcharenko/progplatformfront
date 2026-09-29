@@ -1,15 +1,14 @@
 import {useEffect, useState} from "react";
 import {CourseService} from "@/services/CourseService.ts";
 import {CourseModel} from "@/type/model/CourseModel.ts";
-import {Response} from "@/type/response/Response.ts";
-import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
-import {baseErrorHandler} from "@/utils/errorHandler.ts";
+import {parsError} from "@/utils/errorParser.ts";
+import {ErrorType} from "@/type/ErrorType.ts";
 
 
 const useCourse = (courseId: string | undefined) => {
 
     const [course, setCourse] = useState<CourseModel | undefined>(undefined);
-    const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+    const [error, setError] = useState<ErrorType | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
 
 
@@ -18,7 +17,10 @@ const useCourse = (courseId: string | undefined) => {
         const courseService = new CourseService();
         courseService.getCourseById(courseId)
             .then((response) => setCourse(response.data))
-            .catch((error) => baseErrorHandler(error, setError))
+            .catch((error) => {
+                const parsedError = parsError(error);
+                setError(parsedError);
+            })
             .finally(() => setLoading(false));
     }, [courseId]);
 

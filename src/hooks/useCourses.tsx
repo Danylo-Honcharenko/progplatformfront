@@ -1,22 +1,23 @@
 import {useEffect, useState} from "react";
 import {CourseService} from "@/services/CourseService.ts";
 import {Response} from "@/type/response/Response.ts";
-import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
-import {baseErrorHandler} from "@/utils/errorHandler.ts";
+import {parsError} from "@/utils/errorParser.ts";
 import {CoursesResponse} from "@/type/response/CoursesResponse.ts";
+import {ErrorType} from "@/type/ErrorType.ts";
 
 const useCourses = () => {
 
     const [courses, setCourses] = useState<Response<CoursesResponse> | undefined>(undefined);
     const [loadingCourses, setLoadingCourses] = useState<boolean>(true);
-    const [courseError, setCourseError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
+    const [error, setError] = useState<ErrorType | undefined>(undefined);
 
     useEffect(() => {
         const courseService = new CourseService();
         courseService.getUserCourses()
             .then((courses) => setCourses(courses))
             .catch((error) => {
-                baseErrorHandler(error, setCourseError);
+                const parsedError = parsError(error);
+                setError(parsedError);
                 console.log(error);
             })
             .finally(() => setLoadingCourses(false));
@@ -24,7 +25,7 @@ const useCourses = () => {
 
     return {
         loadingCourses,
-        courseError,
+        courseError: error,
         courses
     };
 };

@@ -3,9 +3,9 @@ import {Button} from "@/components/ui/button.tsx";
 import {Link, Navigate, useParams} from "react-router-dom";
 import Module from "@/components/Module.tsx";
 import useAuth from "@/hooks/useAuth.tsx";
-import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 import useCourse from "@/hooks/useCourse.tsx";
 import useModule from "@/hooks/useModule.tsx";
+import ErrorDialog from "@/components/ErrorDialog.tsx";
 
 const CoursePage = () => {
 
@@ -50,8 +50,9 @@ const CoursePage = () => {
                 </Button>
             </div>
 
-            <ServerErrorDialog
-                error={[courseError, modulesError]}
+            <ErrorDialog
+                code={[courseError?.code, modulesError?.code]}
+                statusCodes={[courseError?.status, modulesError?.status]}
             />
 
         </>

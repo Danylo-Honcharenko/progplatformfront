@@ -2,8 +2,7 @@ import {Navigate} from "react-router-dom";
 import CourseCard from "@/components/CourseCard.tsx";
 import useAuth from "@/hooks/useAuth.tsx";
 import useCourses from "@/hooks/useCourses.tsx";
-import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
-import BadRequestDialog from "@/components/BadRequestDialog.tsx";
+import ErrorDialog from "@/components/ErrorDialog.tsx";
 
 const UserPanel = () => {
 
@@ -42,12 +41,9 @@ const UserPanel = () => {
                 <p>Результати тестування відсутні!</p>
             </div>
 
-            <BadRequestDialog
-                error={[authError, courseError]}
-            />
-
-            <ServerErrorDialog
-                error={[authError, courseError]}
+            <ErrorDialog
+                code={[authError?.code, courseError?.code]}
+                statusCodes={[authError?.status, courseError?.status]}
             />
 
         </>
