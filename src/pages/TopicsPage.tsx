@@ -18,7 +18,6 @@ import NotAuthorizedDialog from "@/components/NotAuthorizedDialog.tsx";
 import BadRequestDialog from "@/components/BadRequestDialog.tsx";
 import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
-
 const TopicsPage = () => {
 
     const [error, setError] = useState<Response<ErrorResponse<string>> | undefined>(undefined);
@@ -40,7 +39,7 @@ const TopicsPage = () => {
             const response = await moduleService.setCompletedTopic(moduleId, topicId, userId);
             setTopics([
                 ...topics.map((topic) => {
-                    if (topic.id === response.data.topicId) {
+                    if (topic.id === response?.data?.topicId) {
                         topic.done = true;
                     }
                     return topic;
@@ -63,9 +62,11 @@ const TopicsPage = () => {
         const topicService = new TopicService();
         topicService.getTopicsByModuleId(moduleId)
             .then((response) => {
-                setTopics(response.data.topics);
-                const pages = response.data.topics.map((topic) => topic.page)
+                const responseTopics = response?.data?.topics ? response.data.topics : [];
+                const pages = responseTopics.map((topic) => topic.page)
                     .filter((page) => page !== undefined);
+
+                setTopics(responseTopics);
                 setPages(pages);
             })
             .catch((error) => baseErrorHandler(error, setError))
@@ -96,7 +97,7 @@ const TopicsPage = () => {
                                 className="mt-3 cursor-pointer"
                                 variant="outline"
                                 disabled={topic?.done}
-                                onClick={() => setDone(topic?.id, moduleId, user?.data.id)}
+                                onClick={() => setDone(topic?.id, moduleId, user?.data?.id)}
                             ><CheckCheck/></Button>
                             <Separator className="mt-3"/>
                             <ScrollArea className="h-[450px]">
@@ -128,6 +129,7 @@ const TopicsPage = () => {
                                     >Завдання</Button>
                                     <Button
                                         className="cursor-pointer"
+                                        onClick={() => console.log("click!!!")}
                                     >Тестування</Button>
                                 </div>
                             </div>

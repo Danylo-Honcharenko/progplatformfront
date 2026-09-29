@@ -2,8 +2,7 @@ import {Navigate} from "react-router-dom";
 import CourseCard from "@/components/CourseCard.tsx";
 import useAuth from "@/hooks/useAuth.tsx";
 import useCourses from "@/hooks/useCourses.tsx";
-import {AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle} from "@radix-ui/react-alert-dialog";
-import {AlertDialogHeader} from "@/components/ui/alert-dialog.tsx";
+import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
 const UserPanel = () => {
 
@@ -14,7 +13,7 @@ const UserPanel = () => {
 
     if (notAuthorized) return <Navigate to="/login" replace/>;
 
-    const coursesAmount = courses?.data.courses?.length;
+    const coursesAmount = courses?.data?.courses?.length;
 
     return (
         <>
@@ -44,17 +43,9 @@ const UserPanel = () => {
                 <p>Результати тестування відсутні!</p>
             </div>
 
-            <AlertDialog open={error.status === 500}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle className="text-red-500">Помилка серверу</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            <p>{typeof error?.data?.details === "string" ? error?.data.details : "Невідома помилка!"}</p>
-                            <p className="text-black mt-3">MSID: {error?.data?.msid}</p>
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                </AlertDialogContent>
-            </AlertDialog>
+            <ServerErrorDialog
+                error={error}
+            />
 
         </>
     );

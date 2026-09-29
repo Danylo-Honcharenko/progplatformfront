@@ -6,7 +6,6 @@ import './style/index.css'
 import Registration from "./pages/Registration.tsx";
 import CoursePage from "@/pages/CoursePage.tsx";
 import UserPanel from "@/pages/UserPanel.tsx";
-import ChangePassword from "@/pages/ChangePassword.tsx";
 import UserProfile from "@/pages/UserProfile.tsx";
 import TopicsPage from "@/pages/TopicsPage.tsx";
 import Panel from "@/components/Panel.tsx";
@@ -48,10 +47,10 @@ function App() {
                 }
             ]
         },
-        {
-            path: "/change-password",
-            Component: ChangePassword
-        }
+        // {
+        //     path: "/change-password",
+        //     Component: ChangePassword
+        // }
     ]);
 
     return <RouterProvider router={router} />;
