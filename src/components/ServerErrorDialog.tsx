@@ -9,15 +9,22 @@ import {Response} from "@/type/response/Response.ts";
 import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
 import {FieldErrorResponse} from "@/type/response/FieldErrorResponse.ts";
 
-const ServerErrorDialog = ({error}: {error: Response<ErrorResponse<string | FieldErrorResponse | undefined>> | Response<ErrorResponse<string> | undefined> | undefined}) => {
+type Error = Response<ErrorResponse<string | FieldErrorResponse | undefined>> | Response<ErrorResponse<string> | undefined> | undefined;
+
+type Props = {
+    error: Error[]
+};
+
+const ServerErrorDialog = ({error}: Props) => {
+
     return (
-        <AlertDialog open={error?.status === 500}>
+        <AlertDialog open={error.length != 0}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle className="text-red-500">Помилка серверу</AlertDialogTitle>
                     <AlertDialogDescription>
                         <p>Перезавантажте сторінку або зверніться до администратора!</p>
-                        <p className="text-black mt-3">MSID: {error?.data?.msid}</p>
+                        <p className="text-black mt-3">MSID: {error[0]?.data?.msid}</p>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
             </AlertDialogContent>

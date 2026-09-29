@@ -52,7 +52,7 @@ const UserProfile = () => {
             </div>
 
             <ServerErrorDialog
-                error={error}
+                error={[error]}
             />
 
         </div>

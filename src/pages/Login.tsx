@@ -13,7 +13,6 @@ import ErrorMessageBox from "@/components/ErrorMessageBox.tsx";
 import {fieldErrorHandler} from "@/utils/errorHandler.ts";
 import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 
-
 const Login = () => {
 
     const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
@@ -39,8 +38,8 @@ const Login = () => {
         }
     }
 
-    if (user?.status === 200) {
-        return <Navigate to={redirectTo(user.data?.role, "/panel")} replace/>
+    if (user?.status === 200 && user.data) {
+        return <Navigate to={redirectTo(user.data.role, "/panel")} replace/>
     }
 
     return (

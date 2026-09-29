@@ -11,9 +11,9 @@ type Props = {
 const ErrorMessageBox = ({error}: Props) => {
 
     const getErrorMessage = () => {
-        if (typeof error?.data.details === "string") {
+        if (typeof error?.data?.details === "string") {
             return <p>{error?.data.details}</p>;
-        } else if (typeof error?.data.details === "object") {
+        } else if (typeof error?.data?.details === "object") {
             return <>
                 <p>{error?.data.details.password}</p>
                 <p>{error?.data.details.email}</p>

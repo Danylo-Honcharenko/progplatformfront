@@ -3,13 +3,12 @@ import CourseCard from "@/components/CourseCard.tsx";
 import useAuth from "@/hooks/useAuth.tsx";
 import useCourses from "@/hooks/useCourses.tsx";
 import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
+import BadRequestDialog from "@/components/BadRequestDialog.tsx";
 
 const UserPanel = () => {
 
     const {notAuthorized, authError} = useAuth();
     const {loadingCourses, courses, courseError} = useCourses();
-
-    const error = {...authError, ...courseError};
 
     if (notAuthorized) return <Navigate to="/login" replace/>;
 
@@ -43,8 +42,12 @@ const UserPanel = () => {
                 <p>Результати тестування відсутні!</p>
             </div>
 
+            <BadRequestDialog
+                error={[authError, courseError]}
+            />
+
             <ServerErrorDialog
-                error={error}
+                error={[authError, courseError]}
             />
 
         </>

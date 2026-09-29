@@ -10,11 +10,23 @@ import {Response} from "@/type/response/Response.ts";
 import {ErrorResponse} from "@/type/response/ErrorResponse.ts";
 import {useEffect, useState} from "react";
 
-const BadRequestDialog = ({error}: {error: Response<ErrorResponse<string>> | undefined}) => {
+type Error = Response<ErrorResponse<string>> | undefined;
+
+type Props = {
+    error: Error[]
+};
+
+const BadRequestDialog = ({error}: Props) => {
+    const [currentError, setCurrentError] = useState<Error>();
     const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(false);
 
     useEffect(() => {
-        setOpenErrorDialog(error?.status === 400);
+        if (error === undefined) return;
+        const badRequestErrors = error?.filter((err) => err?.status === 400);
+        if (badRequestErrors.length != 0) {
+            setOpenErrorDialog(true);
+            setCurrentError(badRequestErrors[0]);
+        }
     }, [error]);
 
     return (
@@ -23,7 +35,7 @@ const BadRequestDialog = ({error}: {error: Response<ErrorResponse<string>> | und
                 <AlertDialogHeader>
                     <AlertDialogTitle>Помилка</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {typeof error?.data.details === "string" ? error?.data.details : "Невідома помилка!"}
+                        {typeof currentError?.data?.details === "string" ? currentError?.data.details : "Невідома помилка!"}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

@@ -18,7 +18,7 @@ const useModule = (courseId: string | undefined) => {
             .then((response) => setModules(response?.data?.modules ? response.data.modules : []))
             .catch((error) => baseErrorHandler(error, setError))
             .finally(() => setLoading(false));
-    }, []);
+    }, [courseId]);
 
     return {
         loadingModules: loading,

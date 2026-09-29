@@ -20,7 +20,7 @@ const useCourse = (courseId: string | undefined) => {
             .then((response) => setCourse(response.data))
             .catch((error) => baseErrorHandler(error, setError))
             .finally(() => setLoading(false));
-    }, []);
+    }, [courseId]);
 
     return {
         course,

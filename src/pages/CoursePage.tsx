@@ -15,8 +15,6 @@ const CoursePage = () => {
     const {loadingCourse, course, courseError} = useCourse(courseId);
     const {loadingModules, modules, modulesError} = useModule(courseId);
 
-    const error = {...modulesError, ...courseError};
-
     if (notAuthorized) return <Navigate to="/login" replace/>
 
     return (
@@ -53,7 +51,7 @@ const CoursePage = () => {
             </div>
 
             <ServerErrorDialog
-                error={error}
+                error={[courseError, modulesError]}
             />
 
         </>

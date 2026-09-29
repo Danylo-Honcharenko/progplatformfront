@@ -139,7 +139,7 @@ const TopicsPage = () => {
             </div>
 
             <ServerErrorDialog
-                error={error}
+                error={[error]}
             />
 
             <BadRequestDialog
