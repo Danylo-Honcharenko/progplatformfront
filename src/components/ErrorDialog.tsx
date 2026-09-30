@@ -1,8 +1,23 @@
 import BadRequestDialog from "@/components/BadRequestDialog.tsx";
+import NetworkErrorDialog from "@/components/NetworkErrorDialog.tsx";
+import NotAuthorizedDialog from "@/components/NotAuthorizedDialog.tsx"
+import {JSX, useEffect, useState} from "react";
+import {ErrorType} from "@/type/ErrorType.ts";
 import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
-import NotAuthorizedDialog from "@/components/NotAuthorizedDialog.tsx";
+import {DialogProps} from "@/props/Props.ts";
 
-const errors = [
+type ErrorStatus = {
+    status: number;
+    Dialog: ({open, onClose}: DialogProps) => JSX.Element;
+};
+
+type Error = {
+    code: string;
+    Dialog: ({open, onClose, description}: DialogProps) => JSX.Element;
+    statusCodes: ErrorStatus[];
+};
+
+const processError: Error[] = [
     {
         code: "ERR_BAD_REQUEST",
         Dialog: BadRequestDialog,
@@ -20,29 +35,62 @@ const errors = [
     },
     {
         code: "ERR_NETWORK",
-        Dialog: ServerErrorDialog,
+        Dialog: NetworkErrorDialog,
         statusCodes: []
     }
 ];
 
 type Props = {
-    code: (string | undefined)[];
-    statusCodes: (number | undefined)[];
+    errors: (ErrorType | undefined)[];
 };
 
-const ErrorDialog = ({code, statusCodes}: Props) => {
-    const filteredCodes = code ? code.filter((code) => !!code) : [];
-    const filteredStatusCodes = statusCodes ? statusCodes.filter((statusCode) => !!statusCode) : [];
+const ErrorDialog = ({errors}: Props) => {
 
-    if (filteredCodes.length != 0) {
-        const errorComponent = errors.find((error) => error.code === code[0]);
-        if (errorComponent && errorComponent.statusCodes.length > 0 && filteredStatusCodes.length != 0) {
-            const errComponent = errorComponent.statusCodes.find((statusCode) => statusCode.status === filteredStatusCodes[0]);
-            return errComponent ? <errComponent.Dialog /> : <errorComponent.Dialog />;
+    const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(false);
+
+    const [foundError] = errors ? errors
+        .filter((error) => error !== undefined)
+        .filter((error) => error.code !== undefined) : [];
+
+    useEffect(() => {
+        setOpenErrorDialog(true);
+    }, [foundError]);
+
+    if (foundError) {
+        const errorComponent = processError.find((error) => error.code === foundError.code);
+        if (errorComponent) {
+            const errComponent = errorComponent.statusCodes.find((statusCode) => statusCode.status === foundError.status);
+
+            return errComponent ?
+                <errComponent.Dialog
+                    open={openErrorDialog}
+                    onClose={() => setOpenErrorDialog(false)}
+                    description={getErrorDescription(foundError)}
+                /> :
+                <errorComponent.Dialog
+                    open={openErrorDialog}
+                    onClose={() => setOpenErrorDialog(false)}
+                    description={getErrorDescription(foundError)}
+                />;
         }
 
-        return errorComponent ? <errorComponent.Dialog /> : <BadRequestDialog />;
+        return <BadRequestDialog
+            open={openErrorDialog}
+            onClose={() => setOpenErrorDialog(false)}
+            description={getErrorDescription(foundError)}
+        />;
     }
 };
+
+const getErrorDescription = (error: ErrorType) => {
+    const details = error.errorBody?.data.details;
+    if (typeof details === "string") {
+        return details;
+    } else if (typeof details === "object") {
+        return `${details.password} ${details.email}`;
+    } else {
+        return "Не вдалось обробити запит! Спробуйте ще раз!";
+    }
+}
 
 export default ErrorDialog;

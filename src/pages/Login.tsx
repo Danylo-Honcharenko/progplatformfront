@@ -7,7 +7,6 @@ import {Input} from "@/components/ui/input.tsx";
 import {UserService} from "@/services/UserService.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {redirectTo} from "@/utils/redirectUtil.ts";
-import ErrorMessageBox from "@/components/ErrorMessageBox.tsx";
 import {parsFieldError} from "@/utils/errorParser.ts";
 import {ErrorType} from "@/type/ErrorType.ts";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
@@ -47,18 +46,6 @@ const Login = () => {
             <div className="form-container">
                 <div className="w-sm">
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center">Увійти</h3>
-                    {error !== undefined && error.status === 404 ?
-                        <ErrorMessageBox
-                            error={error.errorBody}
-                        />
-                        : <></>
-                    }
-                    {error !== undefined && error.status === 400 ?
-                        <ErrorMessageBox
-                            error={error.errorBody}
-                        />
-                        : <></>
-                    }
                     <form className="flex flex-col gap-3 mt-4" onSubmit={login}>
                         <Input
                             type="text"
@@ -90,8 +77,7 @@ const Login = () => {
             </div>
 
             <ErrorDialog
-                code={[error?.code]}
-                statusCodes={[error?.status]}
+                errors={[error]}
             />
 
         </div>

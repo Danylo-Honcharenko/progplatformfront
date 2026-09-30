@@ -51,8 +51,7 @@ const CoursePage = () => {
             </div>
 
             <ErrorDialog
-                code={[courseError?.code, modulesError?.code]}
-                statusCodes={[courseError?.status, modulesError?.status]}
+                errors={[courseError, modulesError]}
             />
 
         </>

@@ -53,8 +53,7 @@ const UserProfile = () => {
 
 
             <ErrorDialog
-                code={[authError?.code]}
-                statusCodes={[authError?.status]}
+                errors={[authError]}
             />
 
         </div>

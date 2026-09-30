@@ -6,26 +6,24 @@ import {
     AlertDialogTitle
 } from "@/components/ui/alert-dialog.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {useState} from "react";
+import {DialogProps} from "@/props/Props.ts";
 
-const BadRequestDialog = () => {
-
-    const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(true);
+const BadRequestDialog = ({open, onClose, description}: DialogProps) => {
 
     return (
-        <AlertDialog open={openErrorDialog}>
+        <AlertDialog open={open}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Помилка</AlertDialogTitle>
+                    <AlertDialogTitle className="text-red-500">Помилка</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Не вдалось обробити запит! Спробуйте ще раз
+                        {description}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <Button
                         variant="outline"
                         className="cursor-pointer"
-                        onClick={() => setOpenErrorDialog(false)}
+                        onClick={onClose}
                     >Закрити</Button>
                 </AlertDialogFooter>
             </AlertDialogContent>

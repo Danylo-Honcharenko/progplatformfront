@@ -42,8 +42,7 @@ const UserPanel = () => {
             </div>
 
             <ErrorDialog
-                code={[authError?.code, courseError?.code]}
-                statusCodes={[authError?.status, courseError?.status]}
+                errors={[authError, courseError]}
             />
 
         </>

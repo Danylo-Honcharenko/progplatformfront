@@ -102,8 +102,7 @@ const Registration = () => {
             </div>
 
             <ErrorDialog
-                code={[error?.code]}
-                statusCodes={[error?.status]}
+                errors={[error]}
             />
 
         </div>
