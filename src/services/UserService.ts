@@ -2,15 +2,15 @@ import {axiosInstance} from "@/config/axios.ts";
 import {Response} from "@/type/response/Response.ts";
 import {UserResponse} from "@/type/response/UserResponse.ts";
 
+export type LoginRequest = {
+    email: string;
+    password: string;
+};
+
 export class UserService {
 
-    async login(email: string, password: string) {
+    async login(request: LoginRequest) {
         try {
-            const request = {
-                email: email,
-                password: password
-            };
-
             return await axiosInstance.post('/user/login', request, {withCredentials: true});
         } catch (error) {
             throw error;

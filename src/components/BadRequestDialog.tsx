@@ -14,7 +14,7 @@ const BadRequestDialog = ({open, onClose, description}: DialogProps) => {
         <AlertDialog open={open}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle className="text-red-500">Помилка</AlertDialogTitle>
+                    <AlertDialogTitle>Помилка</AlertDialogTitle>
                     <AlertDialogDescription>
                         {description}
                     </AlertDialogDescription>

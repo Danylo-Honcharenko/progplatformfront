@@ -6,7 +6,7 @@ import {ErrorType} from "@/type/ErrorType.ts";
 import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
 import {DialogProps} from "@/props/Props.ts";
 
-type ErrorStatus = {
+type ErrorStatusCodes = {
     status: number;
     Dialog: ({open, onClose}: DialogProps) => JSX.Element;
 };
@@ -14,7 +14,7 @@ type ErrorStatus = {
 type Error = {
     code: string;
     Dialog: ({open, onClose, description}: DialogProps) => JSX.Element;
-    statusCodes: ErrorStatus[];
+    statusCodes: ErrorStatusCodes[];
 };
 
 const processError: Error[] = [
