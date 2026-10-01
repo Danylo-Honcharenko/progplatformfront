@@ -10,10 +10,10 @@ const PageBody = ({children}: Props) => {
     return (
         <>
             <Header />
-            <div className="pl-44 pr-44">
+            <div className="px-14">
                 {children}
             </div>
-            <footer className="pl-44 pr-44 p-4">
+            <footer className="px-14 p-4">
                 <Separator />
                 <div className="flex flex-col gap-3 mt-4">
                     <div>

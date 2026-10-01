@@ -7,20 +7,22 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
-import {ArrowLeft, ChevronDown, Home, LogOut, User} from "lucide-react";
+import {AlertCircleIcon, ArrowLeft, ChevronDown, Home, LogOut, User} from "lucide-react";
 import {Badge} from "@/components/ui/badge.tsx";
 import {Link, Navigate} from "react-router-dom";
 import {UserService} from "@/services/UserService.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 import {UserResponse} from "@/type/response/UserResponse.ts";
 import {Response} from "@/type/response/Response.ts";
+import {Alert, AlertTitle} from "@/components/ui/alert.tsx";
 
 type Props = {
     user: Response<UserResponse> | undefined,
     loading: boolean
+    isError: boolean
 };
 
-const PanelHeader = ({user, loading}: Props) => {
+const PanelHeader = ({user, loading, isError}: Props) => {
 
     const [isLogout, setIsLogout] = useState<boolean>(false);
 
@@ -29,6 +31,8 @@ const PanelHeader = ({user, loading}: Props) => {
             const userService = new UserService();
             await userService.logout();
             setIsLogout(true);
+
+            localStorage.removeItem("tokenExpirationDate");
         } catch (error) {
             console.log(error);
         }
@@ -43,38 +47,45 @@ const PanelHeader = ({user, loading}: Props) => {
                     <h2 className="text-xl">Панель користувача</h2>
                 </div>
                 <div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant='ghost' className="cursor-pointer">{loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : user?.data?.lastName + " " + user?.data?.firstName}<ChevronDown /></Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel><Badge>{user?.data?.levelAlias}</Badge>Рівень: {user?.data?.level}</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuGroup>
-                                <Link to="user-profile">
-                                    <DropdownMenuItem>
-                                        <User/>
-                                        <span>Профіль</span>
-                                    </DropdownMenuItem>
-                                </Link>
-                                <DropdownMenuItem onClick={logout}>
-                                    <LogOut/>
-                                    <span>Вийти</span>
-                                </DropdownMenuItem>
+                    {isError ?
+                        <Alert variant="destructive" className="max-w-sm outline-0">
+                            <AlertCircleIcon />
+                            <AlertTitle>Неможливо завантажити користувача</AlertTitle>
+                        </Alert>
+                        :
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant='ghost' className="cursor-pointer">{loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : user?.data?.lastName + " " + user?.data?.firstName}<ChevronDown /></Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                                <DropdownMenuLabel><Badge>{user?.data?.levelAlias}</Badge>Рівень: {user?.data?.level}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <Link to="/">
-                                    <DropdownMenuItem>
-                                        <Home/><span>На головну</span>
+                                <DropdownMenuGroup>
+                                    <Link to="user-profile">
+                                        <DropdownMenuItem>
+                                            <User/>
+                                            <span>Профіль</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                    <DropdownMenuItem onClick={logout}>
+                                        <LogOut/>
+                                        <span>Вийти</span>
                                     </DropdownMenuItem>
-                                </Link>
-                                <Link to="/panel" replace>
-                                    <DropdownMenuItem>
-                                        <ArrowLeft/><span>До панелі користувача</span>
-                                    </DropdownMenuItem>
-                                </Link>
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                                    <DropdownMenuSeparator />
+                                    <Link to="/">
+                                        <DropdownMenuItem>
+                                            <Home/><span>На головну</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                    <Link to="/panel" replace>
+                                        <DropdownMenuItem>
+                                            <ArrowLeft/><span>До панелі користувача</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    }
                 </div>
             </div>
             <Separator className="mt-2"/>

@@ -12,13 +12,23 @@ export type RegisterRequest = {
     lastName: string;
     email: string;
     password: string;
+};
+
+export type LoginResponse = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    role: string;
+    created: string;
+    tokenExpirationDate: string;
 }
 
 export class UserService {
 
-    async login(request: LoginRequest) {
+    async login(request: LoginRequest): Promise<Response<LoginResponse>> {
         try {
-            return await axiosInstance.post('/user/login', request, {withCredentials: true});
+            const response = await axiosInstance.post<Response<LoginResponse>>('/user/login', request, {withCredentials: true});
+            return response.data;
         } catch (error) {
             throw error;
         }

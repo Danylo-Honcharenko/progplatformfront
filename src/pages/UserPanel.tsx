@@ -3,6 +3,8 @@ import CourseCard from "@/components/CourseCard.tsx";
 import useAuth from "@/hooks/useAuth.tsx";
 import useCourses from "@/hooks/useCourses.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
+import {Alert, AlertTitle} from "@/components/ui/alert.tsx";
+import {AlertCircleIcon, InfoIcon} from "lucide-react";
 
 const UserPanel = () => {
 
@@ -24,10 +26,17 @@ const UserPanel = () => {
                         <p>Завантаження...</p>
                     </div>
                     :
+                    courseError ?
+                        <Alert variant="destructive" className="max-w-sm mt-4">
+                            <AlertCircleIcon />
+                            <AlertTitle>Помилка при завантаження вмісту</AlertTitle>
+                        </Alert>
+                        :
                     coursesAmount === 0 ?
-                        <div className="mt-5">
-                            <p>Зверніться до адміністратора щоб стати учасником курсу!</p>
-                        </div>
+                        <Alert className="mt-3 max-w-sm">
+                            <InfoIcon />
+                            <AlertTitle>Зверніться до адміністратора щоб стати учасником курсу!</AlertTitle>
+                        </Alert>
                         :
                         <div className="mt-5 flex gap-3 flex-wrap">
                             {courses?.data?.courses.map((course) => <CourseCard course={course} key={course.id}/>)}
@@ -38,7 +47,10 @@ const UserPanel = () => {
                 <div>
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Результати тестування</h3>
                 </div>
-                <p>Результати тестування відсутні!</p>
+                <Alert className="mt-3 max-w-sm">
+                    <InfoIcon />
+                    <AlertTitle>Результати тестування відсутні</AlertTitle>
+                </Alert>
             </div>
 
             <ErrorDialog

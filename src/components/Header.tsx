@@ -1,25 +1,32 @@
 import {Link} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
-import useAuth from "@/hooks/useAuth.tsx";
+import {useEffect, useState} from "react";
 
 const Header = () => {
 
-    const {notAuthorized, loadingUser} = useAuth();
+    const tokenExpirationDate = localStorage.getItem("tokenExpirationDate");
+    const [isAuth, setIsAuth] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (tokenExpirationDate) {
+            const expirationDate = new Date(tokenExpirationDate);
+            const now = new Date();
+
+            setIsAuth(now < expirationDate);
+        }
+    }, [tokenExpirationDate]);
 
     return (
-        <header className="flex items-center justify-between pl-44 pr-44 pt-4 pb-3">
+        <header className="flex items-center justify-between px-14 pt-4 pb-3">
             <div>
                 <h2 className="font-bold text-xl">ProgPlatform</h2>
             </div>
             <div>
-                {loadingUser ? <p>Loading...</p>
-                    :
-                    <>
-                        <Button asChild><Link
-                            to={!notAuthorized ? "/panel" : "/login"}
-                        >{!notAuthorized ? "Перейти до кабінету користувача" : "Увійти"}</Link></Button>
-                    </>
-                }
+                <Button asChild>
+                    <Link to={isAuth ? "/panel" : "/login"}>
+                        {isAuth ? "Перейти до кабінету користувача" : "Увійти"}
+                    </Link>
+                </Button>
             </div>
         </header>
     );

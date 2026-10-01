@@ -1,5 +1,4 @@
 import useAuth from "@/hooks/useAuth.tsx";
-import {Badge} from "lucide-react";
 import {Navigate} from "react-router-dom";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 
@@ -15,14 +14,13 @@ const UserProfile = () => {
                 <h4 className="scroll-m-20 text-2xl tracking-tight">{user?.data.lastName} {user?.data.firstName}</h4>
                 <p className="mt-2">{user?.data.email}</p>
             </div>
-            <div className="mt-4 bg-zinc-50 p-3 rounded-lg">
+            <div className="mt-4">
                 <div>
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Рівні та система
                         балів</h3>
                 </div>
                 <div className="mt-2">
-                    <p>Ваш поточний
-                        рівень: {user?.data.level} <Badge>{user?.data.levelAlias}</Badge></p>
+                    <p>Ваш поточний рівень: {user?.data.level} {user?.data.levelAlias}</p>
                 </div>
                 <div className="mt-2">
                     <h3 className="text-xl">Можливі рівнів</h3>

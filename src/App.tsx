@@ -9,6 +9,7 @@ import UserPanel from "@/pages/UserPanel.tsx";
 import UserProfile from "@/pages/UserProfile.tsx";
 import TopicsPage from "@/pages/TopicsPage.tsx";
 import Panel from "@/components/Panel.tsx";
+import ErrorBoundary from "@/ErrorBoundary.tsx";
 
 function App() {
 
@@ -53,7 +54,11 @@ function App() {
         // }
     ]);
 
-    return <RouterProvider router={router} />;
+    return (
+        <ErrorBoundary>
+            <RouterProvider router={router} />
+        </ErrorBoundary>
+    )
 }
 
 export default App

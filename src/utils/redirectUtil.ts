@@ -9,6 +9,6 @@ const permissionRedirectUrl: RedirectUtil[] = [
 
 export const redirectTo = (userRole: string, redirectToUrl: string) => {
     const permissionRedirectObject = permissionRedirectUrl.find(({url, roles}) => url === redirectToUrl && roles.includes(userRole));
-    if (!permissionRedirectObject) throw new Error("Could not find user role");
+    if (!permissionRedirectObject) throw new Error("Неможливо перенаправити користувача на сторінку. Не знайдено відповідності ролі до маршруту!");
     return redirectToUrl;
 }

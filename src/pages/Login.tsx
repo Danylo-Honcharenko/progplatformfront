@@ -1,10 +1,8 @@
 import {useState} from "react";
-import {Response} from "../type/response/Response.ts";
-import {UserResponse} from "../type/response/UserResponse.ts";
 import {Link, Navigate} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {LoginRequest, UserService} from "@/services/UserService.ts";
+import {LoginRequest, LoginResponse, UserService} from "@/services/UserService.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {redirectTo} from "@/utils/redirectUtil.ts";
 import {parsFieldError} from "@/utils/errorParser.ts";
@@ -17,7 +15,7 @@ import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 const Login = () => {
 
-    const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
+    const [user, setUser] = useState<LoginResponse | undefined>(undefined);
     const [error, setError] = useState<ErrorType | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -30,6 +28,7 @@ const Login = () => {
             const response = await userService.login(values);
 
             setUser(response.data);
+            localStorage.setItem("tokenExpirationDate", response.data.tokenExpirationDate);
         } catch (error) {
             const handleError = parsFieldError(error);
             setError(handleError);
@@ -48,8 +47,8 @@ const Login = () => {
         onSubmit: login
     });
 
-    if (user?.status === 200) {
-        return <Navigate to={redirectTo(user?.data.role, "/panel")} replace/>
+    if (user) {
+        return <Navigate to={redirectTo(user.role, "/panel")} replace/>
     }
 
     const emailValid: boolean = formik.touched.email !== undefined && formik.errors.email !== undefined;
