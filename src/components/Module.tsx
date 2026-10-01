@@ -11,7 +11,7 @@ const Module = ({module, courseId}: Props) => {
     return (
         <div className="flex flex-col gap-5">
             <div
-                className="flex flex-col gap-6 p-5 shadow-lg rounded-lg w-[410px] justify-between h-80">
+                className="flex flex-col gap-6 px-5 pt-5 pb-5 shadow-lg rounded-lg w-full max-w-sm justify-between min-h-80">
                 <div className="flex items-start justify-between">
                     <div>
                         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">{module.name}</h4>

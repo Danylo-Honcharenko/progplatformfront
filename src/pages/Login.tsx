@@ -55,7 +55,7 @@ const Login = () => {
     const passwordValid: boolean = formik.touched.password !== undefined && formik.errors.password !== undefined;
 
     return (
-        <div>
+        <>
             <div className="form-container">
                 <div className="mx-auto w-full max-w-sm px-4">
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center">Увійти</h3>
@@ -125,7 +125,7 @@ const Login = () => {
                 errors={[error]}
             />
 
-        </div>
+        </>
     );
 };
 

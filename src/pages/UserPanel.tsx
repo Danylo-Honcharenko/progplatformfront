@@ -5,6 +5,7 @@ import useCourses from "@/hooks/useCourses.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import {Alert, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircleIcon, InfoIcon} from "lucide-react";
+import {Skeleton} from "@/components/ui/skeleton.tsx";
 
 const UserPanel = () => {
 
@@ -22,8 +23,10 @@ const UserPanel = () => {
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Курси</h3>
                 </div>
                 {loadingCourses ?
-                    <div>
-                        <p>Завантаження...</p>
+                    <div className="mt-5 flex gap-3 flex-wrap">
+                        {Array.from({length: 3}, (_, i) => i).map((i) => (
+                                <Skeleton key={i} className="w-[250px] h-32 rounded-lg"/>
+                            ))}
                     </div>
                     :
                     courseError ?
