@@ -56,7 +56,7 @@ const Login = () => {
 
     return (
         <>
-            <div className="form-container">
+            <div className="flex min-h-screen flex-col items-center justify-center">
                 <div className="mx-auto w-full max-w-sm px-4">
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-center">Увійти</h3>
                     <form className="mt-3" onSubmit={formik.handleSubmit}>

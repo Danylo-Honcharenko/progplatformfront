@@ -30,7 +30,7 @@ const CoursePage = () => {
                     </Alert>
                 </div>
                 :
-                <div className="flex flex-col h-screen items-center gap-5 justify-center">
+                <div className="flex flex-col min-h-screen px-5 items-center gap-5 justify-center">
                     <div>
                         {loadingCourse ?
                             <Skeleton className="w-40 h-6"/>
