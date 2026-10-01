@@ -48,7 +48,7 @@ const Login = () => {
     });
 
     if (user) {
-        return <Navigate to={redirectTo(user.role, "/panel")} replace/>
+        return <Navigate to={redirectTo(user.role)} replace/>
     }
 
     const emailValid: boolean = formik.touched.email !== undefined && formik.errors.email !== undefined;
