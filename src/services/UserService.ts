@@ -7,6 +7,13 @@ export type LoginRequest = {
     password: string;
 };
 
+export type RegisterRequest = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+}
+
 export class UserService {
 
     async login(request: LoginRequest) {
@@ -17,15 +24,8 @@ export class UserService {
         }
     }
 
-    async registration(firstName: string, lastName: string, email: string, password: string) {
+    async registration(request: RegisterRequest) {
         try {
-            const request = {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: password
-            };
-
             const response = await axiosInstance.post('/user/registration', request);
             return response.status;
         } catch (error) {

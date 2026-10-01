@@ -12,7 +12,7 @@ import {ErrorType} from "@/type/ErrorType.ts";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import {useFormik} from "formik";
 import {Field, FieldDescription, FieldGroup, FieldLabel} from "@/components/ui/field.tsx";
-import {loginSchema} from "@/validationSchemas/loginSchema.ts";
+import {loginValidationSchema} from "@/validationSchemas/loginValidationSchema.ts";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 const Login = () => {
@@ -44,7 +44,7 @@ const Login = () => {
             email: "",
             password: ""
         },
-        validationSchema: loginSchema,
+        validationSchema: loginValidationSchema,
         onSubmit: login
     });
 
@@ -78,13 +78,7 @@ const Login = () => {
                                     disabled={loading}
                                     aria-invalid={emailValid}
                                 />
-                                {emailValid ?
-                                    <FieldDescription>
-                                        {formik.errors.email}
-                                    </FieldDescription>
-                                    :
-                                    null
-                                }
+                                {emailValid ? <FieldDescription>{formik.errors.email}</FieldDescription> : null}
                             </Field>
                             <Field data-invalid={passwordValid}>
                                 {passwordValid ?
@@ -103,13 +97,7 @@ const Login = () => {
                                     autoComplete="off"
                                     aria-invalid={passwordValid}
                                 />
-                                {passwordValid ?
-                                    <FieldDescription>
-                                        {formik.errors.password}
-                                    </FieldDescription>
-                                    :
-                                    null
-                                }
+                                {passwordValid ? <FieldDescription>{formik.errors.password}</FieldDescription> : null}
                             </Field>
                             <Field orientation="horizontal">
                                 <Checkbox
@@ -118,16 +106,13 @@ const Login = () => {
                                     checked={showPassword}
                                     onCheckedChange={() => setShowPassword(!showPassword)}
                                 />
-                                <FieldLabel htmlFor="show-password">
-                                    Показати пароль
-                                </FieldLabel>
+                                <FieldLabel htmlFor="show-password">Показати пароль</FieldLabel>
                             </Field>
                             <Field>
                                 <Button type="submit" className="h-11 cursor-pointer" disabled={loading}>{loading ? <Spinner data-icon="inline-start" /> : "Увійти"}</Button>
                             </Field>
                         </FieldGroup>
                     </form>
-
                     <div className="mt-3 text-center">
                         <div>
                             <p className="text-gray-400">Ще не маєте облікового запису?</p>
