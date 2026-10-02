@@ -11,7 +11,7 @@ import TopicsPage from "@/pages/TopicsPage.tsx";
 import Panel from "@/components/Panel.tsx";
 import ErrorBoundary from "@/ErrorBoundary.tsx";
 
-function App() {
+export function App() {
 
     const router = createBrowserRouter([
         {
@@ -26,10 +26,10 @@ function App() {
             path: "/registration",
             Component: Registration,
         },
-        {
-            path: "/course/:courseId",
-            Component: CoursePage,
-        },
+        // {
+        //     path: "/course/:courseId",
+        //     Component: CoursePage,
+        // },
         {
             path: "/course/:courseId/module/:moduleId/topic",
             Component: TopicsPage,
@@ -45,6 +45,10 @@ function App() {
                 {
                     path: "user-profile",
                     Component: UserProfile
+                },
+                {
+                    path: "course/:courseId",
+                    Component: CoursePage,
                 }
             ]
         },
@@ -58,7 +62,5 @@ function App() {
         <ErrorBoundary>
             <RouterProvider router={router} />
         </ErrorBoundary>
-    )
+    );
 }
-
-export default App

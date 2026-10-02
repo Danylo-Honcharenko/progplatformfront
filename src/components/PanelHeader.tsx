@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import {
     DropdownMenu,
     DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
@@ -12,18 +12,12 @@ import {Badge} from "@/components/ui/badge.tsx";
 import {Link, Navigate} from "react-router-dom";
 import {UserService} from "@/services/UserService.ts";
 import {Separator} from "@/components/ui/separator.tsx";
-import {UserResponse} from "@/type/response/UserResponse.ts";
-import {Response} from "@/type/response/Response.ts";
+import {AuthContext} from "@/components/AuthProvider.tsx";
 
-type Props = {
-    user: Response<UserResponse> | undefined,
-    loading: boolean
-    isError: boolean
-};
-
-const PanelHeader = ({user, loading, isError}: Props) => {
+const PanelHeader = () => {
 
     const [isLogout, setIsLogout] = useState<boolean>(false);
+    const authContext = useContext(AuthContext);
 
     const logout = async () => {
         try {
@@ -41,12 +35,12 @@ const PanelHeader = ({user, loading, isError}: Props) => {
 
     return (
         <>
-            <div className="flex items-center justify-between pl-35 pr-35 pt-3">
+            <div className="flex items-center justify-between px-14 pt-3">
                 <div>
                     <h2 className="text-xl">Панель користувача</h2>
                 </div>
                 <div>
-                    {isError ?
+                    {authContext?.authError !== undefined ?
                         <div className="flex items-center gap-2 text-sm text-red-600 font-medium">
                             <AlertCircleIcon />
                             <p>Помилка</p>
@@ -54,10 +48,10 @@ const PanelHeader = ({user, loading, isError}: Props) => {
                         :
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant='ghost' className="cursor-pointer">{loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : user?.data?.lastName + " " + user?.data?.firstName}<ChevronDown /></Button>
+                                <Button variant='ghost' className="cursor-pointer">{authContext?.loadingUser ? <Skeleton className="w-16 h-5 rounded-lg"/> : authContext?.user?.data?.lastName + " " + authContext?.user?.data?.firstName}<ChevronDown /></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
-                                <DropdownMenuLabel><Badge>{user?.data?.levelAlias}</Badge>Рівень: {user?.data?.level}</DropdownMenuLabel>
+                                <DropdownMenuLabel><Badge>{authContext?.user?.data?.levelAlias}</Badge>Рівень: {authContext?.user?.data?.level}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <Link to="user-profile">

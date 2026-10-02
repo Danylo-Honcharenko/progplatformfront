@@ -93,7 +93,7 @@ const TopicsPage = () => {
                             </div>
                             :
                             <div>
-                                <Link to={`/course/${courseId}`}>
+                                <Link to={`/panel/course/${courseId}`}>
                                     <Button
                                         variant="outline"
                                         className="mt-4 cursor-pointer"

@@ -1,31 +1,31 @@
 import {Skeleton} from "@/components/ui/skeleton.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {Link, Navigate, useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import Module from "@/components/Module.tsx";
-import useAuth from "@/hooks/useAuth.tsx";
 import useCourse from "@/hooks/useCourse.tsx";
 import useModule from "@/hooks/useModule.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
+import {useContext} from "react";
+import {AuthContext} from "@/components/AuthProvider.tsx";
 
 const CoursePage = () => {
 
-    const {notAuthorized} = useAuth();
+    const authContext = useContext(AuthContext);
     let {courseId} = useParams();
 
     const {loadingCourse, course, courseError} = useCourse(courseId);
     const {loadingModules, modules, modulesError} = useModule(courseId);
 
-    if (notAuthorized) return <Navigate to="/login" replace/>
+    if (authContext?.notAuthorized) return <Navigate to="/login" replace/>
 
     return (
         <>
             {courseError || modulesError ?
-                <div className="flex flex-col h-screen items-center justify-center px-4">
+                <div className="px-4">
                     <ContentErrorAlert errors={[courseError, modulesError]} />
                 </div>
                 :
-                <div className="flex flex-col min-h-screen px-5 items-center gap-5 justify-center">
+                <div className="px-4 flex flex-col items-center justify-center mt-3">
                     <div>
                         {loadingCourse ?
                             <Skeleton className="w-40 h-6"/>
@@ -34,14 +34,14 @@ const CoursePage = () => {
                         }
                     </div>
                     {loadingModules ?
-                        <div className="flex gap-6 flex-wrap justify-center">
+                        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 mt-3">
                             {Array.from({length: 3}, (_, i) => i)
                                 .map((i) => (
-                                    <Skeleton key={i} className="w-sm min-h-80 rounded-lg"/>
+                                    <Skeleton key={i} className="xl:min-h-80 xl:max-w-sm rounded-lg"/>
                                 ))}
                         </div>
                         :
-                        <div className="flex gap-6 flex-wrap justify-center">
+                        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 mt-3">
                             {modules.map((module) => (
                                 <Module
                                     module={module}
@@ -51,9 +51,6 @@ const CoursePage = () => {
                             ))}
                         </div>
                     }
-                    <Button asChild variant="link" className="p-0">
-                        <Link to="/panel" replace>До особистого кабінету</Link>
-                    </Button>
                 </div>
             }
 

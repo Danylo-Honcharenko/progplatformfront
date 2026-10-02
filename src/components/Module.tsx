@@ -1,5 +1,6 @@
 import {Button} from "@/components/ui/button.tsx";
 import {ModuleModel} from "@/type/model/ModuleModel.ts";
+import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Link} from "react-router-dom";
 
 type Props = {
@@ -9,26 +10,21 @@ type Props = {
 
 const Module = ({module, courseId}: Props) => {
     return (
-        <div className="flex flex-col gap-5">
-            <div
-                className="flex flex-col gap-6 px-5 pt-5 pb-5 shadow-lg rounded-lg w-full max-w-sm justify-between min-h-80">
-                <div className="flex items-start justify-between">
-                    <div>
-                        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">{module.name}</h4>
-                    </div>
-                    <div>
-                        <p>{module.complete}%</p>
-                    </div>
-                </div>
-                <p>{module.description}</p>
-                <Link to={`/course/${courseId}/module/${module.id}/topic?page=1`}>
-                    <Button
-                        variant="outline"
-                        className="cursor-pointer w-full"
-                    >Перейти</Button>
-                </Link>
-            </div>
-        </div>
+        <Card className="w-full justify-between xl:min-h-80 xl:max-w-sm">
+            <CardHeader>
+                <CardTitle>{module.name} ({module.complete}%)</CardTitle>
+                <CardDescription>
+                    {module.description}
+                </CardDescription>
+            </CardHeader>
+            <CardFooter>
+                <Button asChild variant="outline">
+                    <Link to={`/course/${courseId}/module/${module.id}/topic?page=1`} className="w-full">
+                        Перейти
+                    </Link>
+                </Button>
+            </CardFooter>
+        </Card>
     );
 };
 

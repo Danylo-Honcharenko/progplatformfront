@@ -1,19 +1,20 @@
 import {Navigate} from "react-router-dom";
 import CourseCard from "@/components/CourseCard.tsx";
-import useAuth from "@/hooks/useAuth.tsx";
 import useCourses from "@/hooks/useCourses.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {InfoIcon} from "lucide-react";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
+import {useContext} from "react";
+import {AuthContext} from "@/components/AuthProvider.tsx";
 
 const UserPanel = () => {
 
-    const {notAuthorized, authError} = useAuth();
+    const authContext = useContext(AuthContext);
     const {loadingCourses, courses, courseError} = useCourses();
 
-    if (notAuthorized) return <Navigate to="/login" replace/>;
+    if (authContext?.notAuthorized) return <Navigate to="/login" replace/>;
 
     const coursesAmount = courses?.data.courses.length;
 
@@ -31,7 +32,9 @@ const UserPanel = () => {
                     </div>
                     :
                     courseError ?
-                        <ContentErrorAlert errors={[courseError]} />
+                        <div className="mt-3">
+                            <ContentErrorAlert errors={[courseError]} />
+                        </div>
                         :
                     coursesAmount === 0 ?
                         <Alert className="mt-3 max-w-sm">
@@ -56,7 +59,7 @@ const UserPanel = () => {
             </div>
 
             <ErrorDialog
-                errors={[authError, courseError]}
+                errors={[authContext?.authError, courseError]}
             />
 
         </>

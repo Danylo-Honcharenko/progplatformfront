@@ -3,4 +3,4 @@ const roleHome: Record<string, string> = {
     ROLE_ADMIN: "/panel",
 };
 
-export const redirectTo = (userRole: string) => roleHome[userRole] ?? "/panel";
+export const redirectTo = (userRole: 'ROLE_USER' | 'ROLE_ADMIN') => roleHome[userRole] ?? "/panel";

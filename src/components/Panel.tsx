@@ -1,21 +1,16 @@
 import PanelHeader from "@/components/PanelHeader.tsx";
-import useAuth from "@/hooks/useAuth.tsx";
 import {Outlet} from "react-router-dom";
+import {AuthProvider} from "@/components/AuthProvider.tsx";
 
 const Panel = () => {
-    const {loadingUser, user, authError} = useAuth();
 
     return (
-        <>
-            <PanelHeader
-                loading={loadingUser}
-                user={user}
-                isError={authError !== undefined}
-            />
-            <div className="pl-35 pr-35 pt-3">
+        <AuthProvider>
+            <PanelHeader />
+            <div className="px-14">
                 <Outlet />
             </div>
-        </>
+        </AuthProvider>
     );
 };
 
