@@ -7,11 +7,12 @@ import {
 } from "@/components/ui/alert-dialog.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Link} from "react-router-dom";
+import {DialogProps} from "@/props/Props.ts";
 
-const NotAuthorizedDialog = () => {
+const NotAuthorizedDialog = ({open}: DialogProps) => {
 
     return (
-        <AlertDialog open={true}>
+        <AlertDialog open={open}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Помилка авторизації</AlertDialogTitle>

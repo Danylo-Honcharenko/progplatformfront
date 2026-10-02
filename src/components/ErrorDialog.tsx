@@ -48,9 +48,7 @@ const ErrorDialog = ({errors}: Props) => {
 
     const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(false);
 
-    const [foundError] = errors ? errors
-        .filter((error) => error !== undefined)
-        .filter((error) => error.code !== undefined) : [];
+    const [foundError] = errors.filter((error) => error !== undefined && error.code !== undefined);
 
     useEffect(() => {
         setOpenErrorDialog(true);

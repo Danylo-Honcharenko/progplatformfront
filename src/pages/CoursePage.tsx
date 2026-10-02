@@ -6,8 +6,7 @@ import useAuth from "@/hooks/useAuth.tsx";
 import useCourse from "@/hooks/useCourse.tsx";
 import useModule from "@/hooks/useModule.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
-import {AlertCircleIcon} from "lucide-react";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
+import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
 
 const CoursePage = () => {
 
@@ -23,11 +22,7 @@ const CoursePage = () => {
         <>
             {courseError || modulesError ?
                 <div className="flex flex-col h-screen items-center justify-center px-4">
-                    <Alert variant="destructive" className="max-w-sm">
-                        <AlertCircleIcon />
-                        <AlertTitle>Помилка при завантаження вмісту</AlertTitle>
-                        <AlertDescription>Спробуйте перезавантажити сторінку або зверніться до адміністратора</AlertDescription>
-                    </Alert>
+                    <ContentErrorAlert errors={[courseError, modulesError]} />
                 </div>
                 :
                 <div className="flex flex-col min-h-screen px-5 items-center gap-5 justify-center">

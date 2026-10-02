@@ -14,7 +14,6 @@ import {UserService} from "@/services/UserService.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 import {UserResponse} from "@/type/response/UserResponse.ts";
 import {Response} from "@/type/response/Response.ts";
-import {Alert, AlertTitle} from "@/components/ui/alert.tsx";
 
 type Props = {
     user: Response<UserResponse> | undefined,
@@ -48,10 +47,10 @@ const PanelHeader = ({user, loading, isError}: Props) => {
                 </div>
                 <div>
                     {isError ?
-                        <Alert variant="destructive" className="max-w-sm outline-0">
+                        <div className="flex items-center gap-2 text-sm text-red-600 font-medium">
                             <AlertCircleIcon />
-                            <AlertTitle>Неможливо завантажити користувача</AlertTitle>
-                        </Alert>
+                            <p>Помилка</p>
+                        </div>
                         :
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>

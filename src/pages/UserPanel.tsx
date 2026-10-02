@@ -3,8 +3,9 @@ import CourseCard from "@/components/CourseCard.tsx";
 import useAuth from "@/hooks/useAuth.tsx";
 import useCourses from "@/hooks/useCourses.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
-import {Alert, AlertTitle} from "@/components/ui/alert.tsx";
-import {AlertCircleIcon, InfoIcon} from "lucide-react";
+import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
+import {InfoIcon} from "lucide-react";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 
 const UserPanel = () => {
@@ -25,20 +26,18 @@ const UserPanel = () => {
                 {loadingCourses ?
                     <div className="mt-5 flex gap-3 flex-wrap">
                         {Array.from({length: 3}, (_, i) => i).map((i) => (
-                                <Skeleton key={i} className="w-[250px] h-32 rounded-lg"/>
+                                <Skeleton key={i} className="w-62.5 h-32 rounded-lg"/>
                             ))}
                     </div>
                     :
                     courseError ?
-                        <Alert variant="destructive" className="max-w-sm mt-4">
-                            <AlertCircleIcon />
-                            <AlertTitle>Помилка при завантаження вмісту</AlertTitle>
-                        </Alert>
+                        <ContentErrorAlert errors={[courseError]} />
                         :
                     coursesAmount === 0 ?
                         <Alert className="mt-3 max-w-sm">
                             <InfoIcon />
-                            <AlertTitle>Зверніться до адміністратора щоб стати учасником курсу!</AlertTitle>
+                            <AlertTitle>Доступні курси відсутні</AlertTitle>
+                            <AlertDescription>Зверніться до адміністратора щоб стати учасником курсу!</AlertDescription>
                         </Alert>
                         :
                         <div className="mt-5 flex gap-3 flex-wrap">

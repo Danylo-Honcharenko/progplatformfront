@@ -1,5 +1,5 @@
 import {Button} from "@/components/ui/button.tsx";
-import {AlertCircleIcon, CheckCheck} from "lucide-react";
+import {CheckCheck} from "lucide-react";
 import {Separator} from "@/components/ui/separator.tsx";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import ReactMarkdown from "react-markdown";
@@ -14,7 +14,7 @@ import {Link, Navigate, useParams, useSearchParams} from "react-router-dom";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {ErrorType} from "@/type/ErrorType.ts";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
+import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
 
 const TopicsPage = () => {
 
@@ -82,11 +82,7 @@ const TopicsPage = () => {
         <>
             {error ?
                 <div className="flex flex-col h-screen items-center justify-center px-4">
-                    <Alert variant="destructive" className="max-w-sm">
-                        <AlertCircleIcon />
-                        <AlertTitle>Помилка при завантаження вмісту</AlertTitle>
-                        <AlertDescription>Спробуйте перезавантажити сторінку або зверніться до адміністратора</AlertDescription>
-                    </Alert>
+                    <ContentErrorAlert errors={[error]} />
                 </div>
                 :
                 <div className="flex flex-col h-screen justify-center">
