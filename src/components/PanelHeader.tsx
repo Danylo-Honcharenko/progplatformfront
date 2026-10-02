@@ -40,7 +40,7 @@ const PanelHeader = () => {
                     <h2 className="text-xl">Панель користувача</h2>
                 </div>
                 <div>
-                    {authContext?.authError !== undefined ?
+                    {authContext?.authError ?
                         <div className="flex items-center gap-2 text-sm text-red-600 font-medium">
                             <AlertCircleIcon />
                             <p>Помилка</p>

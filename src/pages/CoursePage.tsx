@@ -7,6 +7,13 @@ import ErrorDialog from "@/components/ErrorDialog.tsx";
 import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
 import {useContext} from "react";
 import {AuthContext} from "@/components/AuthProvider.tsx";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList, BreadcrumbPage,
+    BreadcrumbSeparator
+} from "@/components/ui/breadcrumb.tsx";
 
 const CoursePage = () => {
 
@@ -25,33 +32,44 @@ const CoursePage = () => {
                     <ContentErrorAlert errors={[courseError, modulesError]} />
                 </div>
                 :
-                <div className="px-4 flex flex-col items-center justify-center mt-3">
-                    <div>
-                        {loadingCourse ?
-                            <Skeleton className="w-40 h-6"/>
-                            :
-                            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{course?.name}</h3>
-                        }
+                <>
+                    <Breadcrumb className="mt-3">
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/panel">Панель користувача</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator/>
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>Курс</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                    <div className="px-4 flex flex-col items-center justify-center">
+                        <div>
+                            {loadingCourse ?
+                                <Skeleton className="w-40 h-6"/>
+                                :
+                                <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{course?.name}</h3>
+                            }
+                        </div>
+                        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 mt-3">
+                            {loadingModules ?
+                                Array.from({length: 3}, (_, i) => i)
+                                    .map((i) => (
+                                        <Skeleton key={i} className="xl:min-h-80 xl:max-w-sm rounded-lg"/>
+                                    ))
+                                :
+                                modules.map((module) => (
+                                    <Module
+                                        module={module}
+                                        key={module.id}
+                                        courseId={courseId}
+                                    />
+                                ))
+                            }
+                        </div>
                     </div>
-                    {loadingModules ?
-                        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 mt-3">
-                            {Array.from({length: 3}, (_, i) => i)
-                                .map((i) => (
-                                    <Skeleton key={i} className="xl:min-h-80 xl:max-w-sm rounded-lg"/>
-                                ))}
-                        </div>
-                        :
-                        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 mt-3">
-                            {modules.map((module) => (
-                                <Module
-                                    module={module}
-                                    key={module.id}
-                                    courseId={courseId}
-                                />
-                            ))}
-                        </div>
-                    }
-                </div>
+                </>
             }
 
             <ErrorDialog
