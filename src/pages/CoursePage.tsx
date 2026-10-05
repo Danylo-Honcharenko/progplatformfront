@@ -18,6 +18,8 @@ const CoursePage = () => {
 
     const authContext = useContext(AuthContext);
 
+    if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>
+
     let {courseId} = useParams();
 
     const location = useLocation();
@@ -33,8 +35,6 @@ const CoursePage = () => {
     useEffect(() => {
         document.title = `Курс ${courseName}`;
     }, [courseName]);
-
-    if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>
 
     return (
         <>
