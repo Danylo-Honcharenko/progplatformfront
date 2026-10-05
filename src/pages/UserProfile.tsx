@@ -1,10 +1,17 @@
-import {Navigate} from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 import {Item, ItemContent, ItemDescription, ItemMedia, ItemTitle} from "@/components/ui/item.tsx";
 import {Medal} from "lucide-react";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {AuthContext} from "@/AuthProvider.tsx";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator
+} from "@/components/ui/breadcrumb.tsx";
 
 const UserProfile = () => {
 
@@ -32,8 +39,23 @@ const UserProfile = () => {
         }
     ];
 
+    useEffect(() => {
+        document.title = "Профіль";
+    }, []);
+
     return (
         <div>
+            <Breadcrumb className="mt-3">
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <Link to="/panel" replace>Панель користувача</Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator/>
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>Профіль</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
             <div className="mt-3">
                     {authContext?.authUser.loading ? (
                     <>

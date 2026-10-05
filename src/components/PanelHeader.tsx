@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
-import {AlertCircleIcon, ArrowLeft, ChevronDown, Home, LogOut, User} from "lucide-react";
+import {AlertCircleIcon, ChevronDown, Home, LogOut, User} from "lucide-react";
 import {Badge} from "@/components/ui/badge.tsx";
 import {Link, Navigate} from "react-router-dom";
 import {UserService} from "@/services/UserService.ts";
@@ -76,11 +76,6 @@ const PanelHeader = () => {
                                     <Link to="/">
                                         <DropdownMenuItem>
                                             <Home/><span>На головну</span>
-                                        </DropdownMenuItem>
-                                    </Link>
-                                    <Link to="/panel" replace>
-                                        <DropdownMenuItem>
-                                            <ArrowLeft/><span>До панелі користувача</span>
                                         </DropdownMenuItem>
                                     </Link>
                                 </DropdownMenuGroup>

@@ -55,6 +55,10 @@ const Login = () => {
         return <Navigate to={redirectTo(user.data.role)} replace/>
     }
 
+    // useEffect(() => {
+    //     document.title = "Вхід";
+    // }, []);
+
     const emailValid: boolean = formik.touched.email !== undefined && formik.errors.email !== undefined;
     const passwordValid: boolean = formik.touched.password !== undefined && formik.errors.password !== undefined;
 

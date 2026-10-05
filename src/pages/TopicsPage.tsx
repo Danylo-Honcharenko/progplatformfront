@@ -14,6 +14,7 @@ import {Spinner} from "@/components/ui/spinner.tsx";
 import {ErrorType} from "@/type/ErrorType.ts";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
+import useCourse from "@/hooks/useCourse.tsx";
 import {AuthContext} from "@/AuthProvider.tsx";
 import {
     Breadcrumb,
@@ -32,14 +33,25 @@ const TopicsPage = () => {
     const [pages, setPages] = useState<number[]>([]);
     const authContext = useContext(AuthContext);
 
+    if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>
+
     let {moduleId, courseId} = useParams();
     const [searchParams] = useSearchParams();
     const page = searchParams.get("page");
 
-    // const {course, courseError} = useCourse(courseId);
     const location = useLocation();
     const locationState = location.state || {};
-    const {moduleName, courseName} = locationState;
+    const moduleName = locationState.moduleName;
+
+    const stateCourseName = typeof locationState.courseName === "string"
+        ? locationState.courseName
+        : undefined;
+
+    const {course, courseError} = useCourse(courseId, !stateCourseName);
+
+    const courseName = stateCourseName || course?.name;
+
+    const pageError = error ?? courseError;
 
     const setDone = async (topicId: number | undefined, moduleId: string | undefined, userId: number | undefined) => {
         if (topicId === undefined || moduleId === undefined || userId === undefined) return;
@@ -88,13 +100,11 @@ const TopicsPage = () => {
 
     }, []);
 
-    if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>
-
     return (
         <>
-            {error ?
+            {pageError ?
                 <div className="flex flex-col h-screen items-center justify-center px-4">
-                    <ContentErrorAlert errors={[error]} />
+                    <ContentErrorAlert errors={[error, courseError]} />
                 </div>
                 :
                 <>
@@ -177,7 +187,7 @@ const TopicsPage = () => {
                 </>
             }
             <ErrorDialog
-                errors={[error]}
+                errors={[error, courseError]}
             />
         </>
     );

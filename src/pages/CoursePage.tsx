@@ -2,9 +2,10 @@ import {Skeleton} from "@/components/ui/skeleton.tsx";
 import {Link, Navigate, useLocation, useParams} from "react-router-dom";
 import Module from "@/components/Module.tsx";
 import useModule from "@/hooks/useModule.tsx";
+import useCourse from "@/hooks/useCourse.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {AuthContext} from "@/AuthProvider.tsx";
 import {
     Breadcrumb,
@@ -16,20 +17,30 @@ import {
 const CoursePage = () => {
 
     const authContext = useContext(AuthContext);
+
     let {courseId} = useParams();
+
+    const location = useLocation();
+    const stateCourseName = typeof location.state?.courseName === "string"
+        ? location.state.courseName
+        : undefined;
+
+    const {course, courseError} = useCourse(courseId, !stateCourseName);
+    const courseName = stateCourseName || course?.name;
 
     const {loadingModules, modules, modulesError} = useModule(courseId);
 
-    const location = useLocation();
-    const {courseName} = location.state || {};
+    useEffect(() => {
+        document.title = `Курс ${courseName}`;
+    }, [courseName]);
 
     if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>
 
     return (
         <>
-            {modulesError ?
+            {modulesError || courseError ?
                 <div className="px-4">
-                    <ContentErrorAlert errors={[modulesError]} />
+                    <ContentErrorAlert errors={[modulesError, courseError]} />
                 </div>
                 :
                 <>
@@ -69,7 +80,7 @@ const CoursePage = () => {
             }
 
             <ErrorDialog
-                errors={[modulesError]}
+                errors={[modulesError, courseError]}
             />
 
         </>

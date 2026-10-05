@@ -35,10 +35,6 @@ export function App() {
             path: "/registration",
             Component: Registration,
         },
-        // {
-        //     path: "/course/:courseId/module/:moduleId/topic",
-        //     Component: TopicsPage,
-        // },
         {
             path: "/panel",
             Component: Layout,
