@@ -5,11 +5,18 @@ import {parsError} from "@/utils/errorParser.ts";
 import {UserResponse} from "@/type/response/UserResponse.ts";
 import {ErrorType} from "@/type/ErrorType.ts";
 
+export type Auth = {
+    loading: boolean;
+    user: Response<UserResponse> | undefined;
+    authError: ErrorType | undefined;
+    notAuthorized: boolean;
+};
+
 const useAuth = () => {
 
     const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
     const [error, setError] = useState<ErrorType | undefined>(undefined);
-    const [loadingUser, setLoadingUser] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const userService = new UserService();
@@ -20,11 +27,11 @@ const useAuth = () => {
                 setError(parsedError);
                 console.log(error);
             })
-            .finally(() => setLoadingUser(false));
+            .finally(() => setLoading(false));
     }, []);
 
     return {
-        loadingUser,
+        loading,
         user,
         authError: error,
         notAuthorized: error?.status === 401

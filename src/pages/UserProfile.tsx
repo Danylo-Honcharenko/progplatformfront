@@ -4,14 +4,13 @@ import {Skeleton} from "@/components/ui/skeleton.tsx";
 import {Item, ItemContent, ItemDescription, ItemMedia, ItemTitle} from "@/components/ui/item.tsx";
 import {Medal} from "lucide-react";
 import {useContext} from "react";
-import {AuthContext} from "@/components/AuthProvider.tsx";
+import {AuthContext} from "@/AuthProvider.tsx";
 
 const UserProfile = () => {
 
     const authContext = useContext(AuthContext);
 
-
-    if (authContext?.notAuthorized) return <Navigate to="/login" replace/>;
+    if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>;
 
     type Level = {
         levelName: string,
@@ -36,15 +35,15 @@ const UserProfile = () => {
     return (
         <div>
             <div className="mt-3">
-                    {authContext?.loadingUser ? (
+                    {authContext?.authUser.loading ? (
                     <>
                         <Skeleton className="h-8 w-56" />
                         <Skeleton className="mt-2 h-5 w-48" />
                     </>
                 ) : (
                     <>
-                        <h3 className="scroll-m-20 text-xl tracking-tight">{authContext?.user?.data.lastName} {authContext?.user?.data.firstName}</h3>
-                        <p className="mt-2">{authContext?.user?.data.email}</p>
+                        <h3 className="scroll-m-20 text-xl tracking-tight">{authContext?.authUser.user?.data.lastName} {authContext?.authUser.user?.data.firstName}</h3>
+                        <p className="mt-2">{authContext?.authUser.user?.data.email}</p>
                     </>
                 )}
             </div>
@@ -56,12 +55,12 @@ const UserProfile = () => {
                 </div>
                 <div className="flex text-black gap-4 mt-4">
                     {levels.map(({levelName, levelDescription}, index) => (
-                        <Item variant={levelName === authContext?.user?.data.levelAlias ? "outline" : "muted"} key={index} className="min-w-3xs">
+                        <Item variant={levelName === authContext?.authUser.user?.data.levelAlias ? "outline" : "muted"} key={index} className="min-w-3xs">
                             <ItemMedia variant="icon">
                                 <Medal />
                             </ItemMedia>
                             <ItemContent>
-                                <ItemTitle>{levelName} {levelName === authContext?.user?.data.levelAlias ? "(Поточний)" : ""}</ItemTitle>
+                                <ItemTitle>{levelName} {levelName === authContext?.authUser.user?.data.levelAlias ? "(Поточний)" : ""}</ItemTitle>
                                 <ItemDescription>{levelDescription}</ItemDescription>
                             </ItemContent>
                         </Item>
@@ -70,7 +69,7 @@ const UserProfile = () => {
             </div>
 
             <ErrorDialog
-                errors={[authContext?.authError]}
+                errors={[authContext?.authUser.authError]}
             />
 
         </div>

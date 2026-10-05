@@ -4,11 +4,11 @@ import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/compon
 import {Link} from "react-router-dom";
 
 type Props = {
-    module: ModuleModel,
-    courseId: string | undefined
+    module: ModuleModel
+    courseName: any
 };
 
-const Module = ({module, courseId}: Props) => {
+const Module = ({module, courseName}: Props) => {
     return (
         <Card className="w-full justify-between xl:min-h-80 xl:max-w-sm">
             <CardHeader>
@@ -19,7 +19,11 @@ const Module = ({module, courseId}: Props) => {
             </CardHeader>
             <CardFooter>
                 <Button asChild variant="outline">
-                    <Link to={`/course/${courseId}/module/${module.id}/topic?page=1`} className="w-full">
+                    <Link
+                        to={`module/${module.id}/topic?page=1`}
+                        className="w-full"
+                        state={{moduleName: module.name, courseName: courseName}}
+                    >
                         Перейти
                     </Link>
                 </Button>

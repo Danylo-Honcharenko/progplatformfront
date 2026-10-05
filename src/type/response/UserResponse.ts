@@ -6,5 +6,6 @@ export type UserResponse = {
     role: string;
     level: number;
     levelAlias: string;
+    tokenExpirationDate: string;
     created: string
 }

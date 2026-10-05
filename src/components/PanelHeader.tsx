@@ -12,7 +12,7 @@ import {Badge} from "@/components/ui/badge.tsx";
 import {Link, Navigate} from "react-router-dom";
 import {UserService} from "@/services/UserService.ts";
 import {Separator} from "@/components/ui/separator.tsx";
-import {AuthContext} from "@/components/AuthProvider.tsx";
+import {AuthContext} from "@/AuthProvider.tsx";
 
 const PanelHeader = () => {
 
@@ -23,6 +23,14 @@ const PanelHeader = () => {
         try {
             const userService = new UserService();
             await userService.logout();
+
+            authContext?.setAuthUser({
+                loading: false,
+                user: undefined,
+                authError: undefined,
+                notAuthorized: true
+            });
+
             setIsLogout(true);
 
             localStorage.removeItem("tokenExpirationDate");
@@ -40,7 +48,7 @@ const PanelHeader = () => {
                     <h2 className="text-xl">Панель користувача</h2>
                 </div>
                 <div>
-                    {authContext?.authError ?
+                    {authContext?.authUser.authError ?
                         <div className="flex items-center gap-2 text-sm text-red-600 font-medium">
                             <AlertCircleIcon />
                             <p>Помилка</p>
@@ -48,10 +56,10 @@ const PanelHeader = () => {
                         :
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant='ghost' className="cursor-pointer">{authContext?.loadingUser ? <Skeleton className="w-16 h-5 rounded-lg"/> : authContext?.user?.data?.lastName + " " + authContext?.user?.data?.firstName}<ChevronDown /></Button>
+                                <Button variant='ghost' className="cursor-pointer">{authContext?.authUser.loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : authContext?.authUser.user?.data?.lastName + " " + authContext?.authUser.user?.data?.firstName}<ChevronDown /></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
-                                <DropdownMenuLabel><Badge>{authContext?.user?.data?.levelAlias}</Badge>Рівень: {authContext?.user?.data?.level}</DropdownMenuLabel>
+                            <DropdownMenuLabel><Badge>{authContext?.authUser.user?.data?.levelAlias}</Badge>Рівень: {authContext?.authUser.user?.data?.level}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <Link to="user-profile">

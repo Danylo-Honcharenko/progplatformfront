@@ -2,7 +2,7 @@ import {useState} from "react";
 import {Link, Navigate} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {LoginRequest, LoginResponse, UserService} from "@/services/UserService.ts";
+import {LoginRequest, UserService} from "@/services/UserService.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {redirectTo} from "@/utils/redirectUtil.ts";
 import {parsFieldError} from "@/utils/errorParser.ts";
@@ -12,10 +12,13 @@ import {useFormik} from "formik";
 import {Field, FieldDescription, FieldGroup, FieldLabel} from "@/components/ui/field.tsx";
 import {loginValidationSchema} from "@/validationSchemas/loginValidationSchema.ts";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
+import {UserResponse} from "@/type/response/UserResponse.ts";
+import {Response} from "@/type/response/Response.ts";
+
 
 const Login = () => {
 
-    const [user, setUser] = useState<LoginResponse | undefined>(undefined);
+    const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
     const [error, setError] = useState<ErrorType | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -27,7 +30,8 @@ const Login = () => {
             const userService = new UserService();
             const response = await userService.login(values);
 
-            setUser(response.data);
+            setUser(response);
+
             localStorage.setItem("tokenExpirationDate", response.data.tokenExpirationDate);
         } catch (error) {
             const handleError = parsFieldError(error);
@@ -48,7 +52,7 @@ const Login = () => {
     });
 
     if (user) {
-        return <Navigate to={redirectTo(user.role)} replace/>
+        return <Navigate to={redirectTo(user.data.role)} replace/>
     }
 
     const emailValid: boolean = formik.touched.email !== undefined && formik.errors.email !== undefined;

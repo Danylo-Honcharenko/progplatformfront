@@ -14,20 +14,11 @@ export type RegisterRequest = {
     password: string;
 };
 
-export type LoginResponse = {
-    id: number;
-    firstName: string;
-    lastName: string;
-    role: string;
-    created: string;
-    tokenExpirationDate: string;
-}
-
 export class UserService {
 
-    async login(request: LoginRequest): Promise<Response<LoginResponse>> {
+    async login(request: LoginRequest): Promise<Response<UserResponse>> {
         try {
-            const response = await axiosInstance.post<Response<LoginResponse>>('/user/login', request, {withCredentials: true});
+            const response = await axiosInstance.post<Response<UserResponse>>('/user/login', request, {withCredentials: true});
             return response.data;
         } catch (error) {
             throw error;

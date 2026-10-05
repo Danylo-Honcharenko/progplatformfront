@@ -8,8 +8,17 @@ import CoursePage from "@/pages/CoursePage.tsx";
 import UserPanel from "@/pages/UserPanel.tsx";
 import UserProfile from "@/pages/UserProfile.tsx";
 import TopicsPage from "@/pages/TopicsPage.tsx";
-import Panel from "@/components/Panel.tsx";
+import PanelLayout from "@/components/PanelLayout.tsx";
 import ErrorBoundary from "@/ErrorBoundary.tsx";
+import {AuthProvider} from "@/AuthProvider.tsx";
+
+const Layout = () => {
+    return (
+        <AuthProvider>
+            <PanelLayout />
+        </AuthProvider>
+    );
+}
 
 export function App() {
 
@@ -27,16 +36,12 @@ export function App() {
             Component: Registration,
         },
         // {
-        //     path: "/course/:courseId",
-        //     Component: CoursePage,
+        //     path: "/course/:courseId/module/:moduleId/topic",
+        //     Component: TopicsPage,
         // },
         {
-            path: "/course/:courseId/module/:moduleId/topic",
-            Component: TopicsPage,
-        },
-        {
             path: "/panel",
-            Component: Panel,
+            Component: Layout,
             children: [
                 {
                     index: true,
@@ -49,6 +54,10 @@ export function App() {
                 {
                     path: "course/:courseId",
                     Component: CoursePage,
+                },
+                {
+                    path: "course/:courseId/module/:moduleId/topic",
+                    Component: TopicsPage,
                 }
             ]
         },
