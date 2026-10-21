@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 
 type Props = {
     module: ModuleModel
-    courseName: any
+    courseName: string
 };
 
 const Module = ({module, courseName}: Props) => {

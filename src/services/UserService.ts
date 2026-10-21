@@ -1,18 +1,8 @@
 import {axiosInstance} from "@/config/axios.ts";
 import {Response} from "@/type/response/Response.ts";
 import {UserResponse} from "@/type/response/UserResponse.ts";
-
-export type LoginRequest = {
-    email: string;
-    password: string;
-};
-
-export type RegisterRequest = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-};
+import {LoginRequest} from "@/type/request/LoginRequest.ts";
+import {RegisterRequest} from "@/type/request/RegisterRequest.ts";
 
 export class UserService {
 

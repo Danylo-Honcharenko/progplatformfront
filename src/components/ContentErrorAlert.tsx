@@ -1,12 +1,9 @@
 import {AlertCircleIcon, AlertTriangleIcon} from "lucide-react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {ErrorType} from "@/type/ErrorType.ts";
+import {ErrorsProps} from "@/props/Props.ts";
 
-type Props = {
-    errors: (ErrorType | undefined)[];
-};
-
-const ContentErrorAlert = ({errors}: Props) => {
+const ContentErrorAlert = ({errors}: ErrorsProps) => {
     const foundError = errors.find((error) => error?.code !== undefined);
 
     if (!foundError) return null;

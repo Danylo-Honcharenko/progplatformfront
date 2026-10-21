@@ -4,7 +4,7 @@ import NotAuthorizedDialog from "@/components/NotAuthorizedDialog.tsx"
 import {JSX, useEffect, useState} from "react";
 import {ErrorType} from "@/type/ErrorType.ts";
 import ServerErrorDialog from "@/components/ServerErrorDialog.tsx";
-import {DialogProps} from "@/props/Props.ts";
+import {DialogProps, ErrorsProps} from "@/props/Props.ts";
 
 type ErrorStatusCodes = {
     status: number;
@@ -40,11 +40,7 @@ const processError: Error[] = [
     }
 ];
 
-type Props = {
-    errors: (ErrorType | undefined)[];
-};
-
-const ErrorDialog = ({errors}: Props) => {
+const ErrorDialog = ({errors}: ErrorsProps) => {
 
     const [openErrorDialog, setOpenErrorDialog] = useState<boolean>(false);
 
