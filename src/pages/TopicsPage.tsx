@@ -9,7 +9,7 @@ import {useEffect, useState} from "react";
 import {TopicService} from "@/services/TopicService.ts";
 import {TopicModel} from "@/type/model/TopicModel.ts";
 import {ModuleService} from "@/services/ModuleService.ts";
-import {Link, Navigate, useLocation, useParams, useSearchParams} from "react-router-dom";
+import {Link, useLocation, useParams, useSearchParams} from "react-router-dom";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {ErrorType} from "@/type/ErrorType.ts";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
@@ -32,8 +32,6 @@ const TopicsPage = () => {
     const [topic, setTopic] = useState<TopicModel | undefined>(undefined);
     const [pages, setPages] = useState<number[]>([]);
     const authContext = useAuthContext();
-
-    if (authContext.authUser.notAuthorized) return <Navigate to="/login" replace/>
 
     let {moduleId, courseId} = useParams();
     const [searchParams] = useSearchParams();
@@ -97,7 +95,6 @@ const TopicsPage = () => {
                 setError(parsedError);
             })
             .finally(() => setLoading(false));
-
     }, []);
 
     return (

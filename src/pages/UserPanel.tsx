@@ -1,4 +1,3 @@
-import {Navigate} from "react-router-dom";
 import CourseCard from "@/components/CourseCard.tsx";
 import useCourses from "@/hooks/useCourses.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
@@ -12,8 +11,6 @@ import useAuthContext from "@/hooks/useAuthContext.tsx";
 const UserPanel = () => {
 
     const authContext = useAuthContext();
-
-    if (authContext.authUser.notAuthorized) return <Navigate to="/login" replace/>;
 
     const {loadingCourses, courses, courseError} = useCourses();
 

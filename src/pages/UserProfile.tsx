@@ -1,4 +1,4 @@
-import {Link, Navigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 import {Item, ItemContent, ItemDescription, ItemMedia, ItemTitle} from "@/components/ui/item.tsx";
@@ -16,8 +16,6 @@ import {
 const UserProfile = () => {
 
     const authContext = useAuthContext();
-
-    if (authContext.authUser.notAuthorized) return <Navigate to="/login" replace/>;
 
     type Level = {
         levelName: string,

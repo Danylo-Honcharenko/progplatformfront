@@ -1,12 +1,11 @@
 import {Skeleton} from "@/components/ui/skeleton.tsx";
-import {Link, Navigate, useLocation, useParams} from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import Module from "@/components/Module.tsx";
 import useModule from "@/hooks/useModule.tsx";
 import useCourse from "@/hooks/useCourse.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
 import {useEffect} from "react";
-import useAuthContext from "@/hooks/useAuthContext.tsx";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -15,11 +14,6 @@ import {
 } from "@/components/ui/breadcrumb.tsx";
 
 const CoursePage = () => {
-
-    const authContext = useAuthContext();
-
-    if (authContext.authUser.notAuthorized) return <Navigate to="/login" replace/>
-
     let {courseId} = useParams();
 
     const location = useLocation();

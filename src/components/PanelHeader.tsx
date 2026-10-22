@@ -8,29 +8,13 @@ import {Button} from "@/components/ui/button.tsx";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 import {AlertCircleIcon, ChevronDown, Home, LogOut, User} from "lucide-react";
 import {Badge} from "@/components/ui/badge.tsx";
-import {Link, Navigate} from "react-router-dom";
-import {UserService} from "@/services/UserService.ts";
+import {Link} from "react-router-dom";
 import {Separator} from "@/components/ui/separator.tsx";
 import useAuthContext from "@/hooks/useAuthContext.tsx";
 
 const PanelHeader = () => {
 
-    const {authUser, logout: logoutLocally} = useAuthContext();
-
-    const logout = async () => {
-        try {
-            const userService = new UserService();
-            await userService.logout();
-
-            logoutLocally();
-
-            localStorage.removeItem("tokenExpirationDate");
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    if (authUser.notAuthorized) return <Navigate to="/login" replace/>;
+    const {authUser, logout} = useAuthContext();
 
     return (
         <>
