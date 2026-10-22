@@ -5,7 +5,7 @@ import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import ReactMarkdown from "react-markdown";
 import {CODE, H2, P, PRE, UL} from "@/utils/markDwmStyle.tsx";
 import {parsError} from "@/utils/errorParser.ts";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {TopicService} from "@/services/TopicService.ts";
 import {TopicModel} from "@/type/model/TopicModel.ts";
 import {ModuleService} from "@/services/ModuleService.ts";
@@ -15,7 +15,7 @@ import {ErrorType} from "@/type/ErrorType.ts";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
 import useCourse from "@/hooks/useCourse.tsx";
-import {AuthContext} from "@/AuthProvider.tsx";
+import useAuthContext from "@/hooks/useAuthContext.tsx";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -31,9 +31,9 @@ const TopicsPage = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [topic, setTopic] = useState<TopicModel | undefined>(undefined);
     const [pages, setPages] = useState<number[]>([]);
-    const authContext = useContext(AuthContext);
+    const authContext = useAuthContext();
 
-    if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>
+    if (authContext.authUser.notAuthorized) return <Navigate to="/login" replace/>
 
     let {moduleId, courseId} = useParams();
     const [searchParams] = useSearchParams();
@@ -139,7 +139,7 @@ const TopicsPage = () => {
                                         className="mt-3 cursor-pointer"
                                         variant="outline"
                                         disabled={topic?.done}
-                                        onClick={() => setDone(topic?.id, moduleId, authContext?.authUser.user?.data.id)}
+                                        onClick={() => setDone(topic?.id, moduleId, authContext.authUser.user?.data.id)}
                                     ><CheckCheck/></Button>
                                     <Separator className="mt-3"/>
                                     <ScrollArea className="h-112.5">

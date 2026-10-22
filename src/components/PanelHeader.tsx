@@ -1,4 +1,3 @@
-import {useContext, useState} from 'react';
 import {
     DropdownMenu,
     DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
@@ -12,26 +11,18 @@ import {Badge} from "@/components/ui/badge.tsx";
 import {Link, Navigate} from "react-router-dom";
 import {UserService} from "@/services/UserService.ts";
 import {Separator} from "@/components/ui/separator.tsx";
-import {AuthContext} from "@/AuthProvider.tsx";
+import useAuthContext from "@/hooks/useAuthContext.tsx";
 
 const PanelHeader = () => {
 
-    const [isLogout, setIsLogout] = useState<boolean>(false);
-    const authContext = useContext(AuthContext);
+    const {authUser, logout: logoutLocally} = useAuthContext();
 
     const logout = async () => {
         try {
             const userService = new UserService();
             await userService.logout();
 
-            authContext?.setAuthUser({
-                loading: false,
-                user: undefined,
-                authError: undefined,
-                notAuthorized: true
-            });
-
-            setIsLogout(true);
+            logoutLocally();
 
             localStorage.removeItem("tokenExpirationDate");
         } catch (error) {
@@ -39,7 +30,7 @@ const PanelHeader = () => {
         }
     }
 
-    if (isLogout) return <Navigate to="/login" replace/>;
+    if (authUser.notAuthorized) return <Navigate to="/login" replace/>;
 
     return (
         <>
@@ -48,7 +39,7 @@ const PanelHeader = () => {
                     <h2 className="text-xl">Панель користувача</h2>
                 </div>
                 <div>
-                    {authContext?.authUser.authError ?
+                    {authUser.authError ?
                         <div className="flex items-center gap-2 text-sm text-red-600 font-medium">
                             <AlertCircleIcon />
                             <p>Помилка</p>
@@ -56,10 +47,10 @@ const PanelHeader = () => {
                         :
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant='ghost' className="cursor-pointer">{authContext?.authUser.loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : authContext?.authUser.user?.data?.lastName + " " + authContext?.authUser.user?.data?.firstName}<ChevronDown /></Button>
+                                <Button variant='ghost' className="cursor-pointer">{authUser.loading ? <Skeleton className="w-16 h-5 rounded-lg"/> : authUser.user?.data?.lastName + " " + authUser.user?.data?.firstName}<ChevronDown /></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel><Badge>{authContext?.authUser.user?.data?.levelAlias}</Badge>Рівень: {authContext?.authUser.user?.data?.level}</DropdownMenuLabel>
+                            <DropdownMenuLabel><Badge>{authUser.user?.data?.levelAlias}</Badge>Рівень: {authUser.user?.data?.level}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <Link to="user-profile">

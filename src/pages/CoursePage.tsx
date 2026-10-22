@@ -5,8 +5,8 @@ import useModule from "@/hooks/useModule.tsx";
 import useCourse from "@/hooks/useCourse.tsx";
 import ErrorDialog from "@/components/ErrorDialog.tsx";
 import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
-import {useContext, useEffect} from "react";
-import {AuthContext} from "@/AuthProvider.tsx";
+import {useEffect} from "react";
+import useAuthContext from "@/hooks/useAuthContext.tsx";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -16,9 +16,9 @@ import {
 
 const CoursePage = () => {
 
-    const authContext = useContext(AuthContext);
+    const authContext = useAuthContext();
 
-    if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>
+    if (authContext.authUser.notAuthorized) return <Navigate to="/login" replace/>
 
     let {courseId} = useParams();
 

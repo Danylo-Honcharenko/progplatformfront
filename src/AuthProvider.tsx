@@ -1,33 +1,28 @@
-import {createContext, FC, ReactNode, useEffect, useRef, useState} from "react";
+import {createContext, FC, ReactNode, useCallback, useMemo, useState} from "react";
 import useAuth, {Auth} from "@/hooks/useAuth.tsx";
 
-type AuthContext = {
+type AuthContextValue = {
     authUser: Auth;
-    setAuthUser: (user: Auth) => void;
+    logout: () => void;
 };
 
-export const AuthContext = createContext<AuthContext | undefined>(undefined);
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({children}) => {
 
-    const auth = useAuth();
-    const [authUser, setAuthUser] = useState<Auth>(auth);
-    const hasLoginUpdate = useRef(false);
+    const {loading, user, authError, notAuthorized} = useAuth();
+    const [loggedOut, setLoggedOut] = useState(false);
 
-    useEffect(() => {
-        if (!hasLoginUpdate.current) {
-            setAuthUser(auth);
-        }
-    }, [auth.loading, auth.user, auth.authError, auth.notAuthorized]);
+    const logout = useCallback(() => setLoggedOut(true), []);
 
-    const setLoggedInUser = (userAuth: Auth) => {
-        hasLoginUpdate.current = true;
-        setAuthUser(userAuth);
-    };
+    const value = useMemo<AuthContextValue>(() => ({
+        authUser: loggedOut
+            ? {loading: false, user: undefined, authError: undefined, notAuthorized: true}
+            : {loading, user, authError, notAuthorized},
+        logout,
+    }), [loading, user, authError, notAuthorized, loggedOut, logout]);
 
     return (
-        <AuthContext.Provider value={{authUser, setAuthUser: setLoggedInUser}}>
-            {children}
-        </AuthContext.Provider>
+        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
     );
 };

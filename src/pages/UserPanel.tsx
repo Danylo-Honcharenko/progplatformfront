@@ -6,14 +6,14 @@ import ContentErrorAlert from "@/components/ContentErrorAlert.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {InfoIcon} from "lucide-react";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
-import {useContext, useEffect} from "react";
-import {AuthContext} from "@/AuthProvider.tsx";
+import {useEffect} from "react";
+import useAuthContext from "@/hooks/useAuthContext.tsx";
 
 const UserPanel = () => {
 
-    const authContext = useContext(AuthContext);
+    const authContext = useAuthContext();
 
-    if (authContext?.authUser.notAuthorized) return <Navigate to="/login" replace/>;
+    if (authContext.authUser.notAuthorized) return <Navigate to="/login" replace/>;
 
     const {loadingCourses, courses, courseError} = useCourses();
 
@@ -64,7 +64,7 @@ const UserPanel = () => {
             </div>
 
             <ErrorDialog
-                errors={[authContext?.authUser.authError, courseError]}
+                errors={[authContext.authUser.authError, courseError]}
             />
 
         </>

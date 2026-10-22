@@ -1,18 +1,17 @@
 import PanelHeader from "@/components/PanelHeader.tsx";
 import {Outlet} from "react-router-dom";
-import {AuthContext} from "@/AuthProvider.tsx";
-import {useContext} from "react";
+import useAuthContext from "@/hooks/useAuthContext.tsx";
 import {Spinner} from "@/components/ui/spinner.tsx";
 
 const PanelLayout = () => {
 
-    const authContext = useContext(AuthContext);
+    const authContext = useAuthContext();
 
     return (
         <>
             <PanelHeader />
             <div className="px-14">
-                {authContext?.authUser.loading ?
+                {authContext.authUser.loading ?
                     <div className="flex justify-center items-center mt-4">
                         <Spinner className="size-8" />
                     </div>
