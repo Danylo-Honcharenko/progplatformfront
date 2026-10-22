@@ -1,9 +1,8 @@
-import {useEffect, useState} from "react";
 import {UserService} from "@/services/UserService.ts";
 import {Response} from "@/type/response/Response.ts";
-import {parsError} from "@/utils/errorParser.ts";
 import {UserResponse} from "@/type/response/UserResponse.ts";
 import {ErrorType} from "@/type/ErrorType.ts";
+import useRequest from "@/hooks/useRequest.tsx";
 
 export type Auth = {
     loading: boolean;
@@ -12,27 +11,16 @@ export type Auth = {
     notAuthorized: boolean;
 };
 
-const useAuth = () => {
+const useAuth = (): Auth => {
 
-    const [user, setUser] = useState<Response<UserResponse> | undefined>(undefined);
-    const [error, setError] = useState<ErrorType | undefined>(undefined);
-    const [loading, setLoading] = useState<boolean>(true);
-
-    useEffect(() => {
-        const userService = new UserService();
-        userService.getAuthUser()
-            .then(user => setUser(user))
-            .catch(error => {
-                const parsedError = parsError(error);
-                setError(parsedError);
-                console.log(error);
-            })
-            .finally(() => setLoading(false));
-    }, []);
+    const {data, error, loading} = useRequest(
+        () => new UserService().getAuthUser(),
+        []
+    );
 
     return {
         loading,
-        user,
+        user: data,
         authError: error,
         notAuthorized: error?.status === 401
     };

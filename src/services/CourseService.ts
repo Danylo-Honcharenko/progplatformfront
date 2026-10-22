@@ -1,6 +1,5 @@
 import {axiosInstance} from "@/config/axios.ts";
 import {Response} from "@/type/response/Response.ts";
-import {CoursesResponse} from "@/type/response/CoursesResponse.ts";
 import {CourseModel} from "@/type/model/CourseModel.ts";
 
 export class CourseService {
@@ -13,7 +12,7 @@ export class CourseService {
         }
     }
 
-    getUserCourses = async (): Promise<Response<CoursesResponse>> => {
+    getUserCourses = async (): Promise<Response<CourseModel[]>> => {
         try {
             const response = await axiosInstance.get("/course/getUserCourse", {withCredentials: true});
             return response.data;

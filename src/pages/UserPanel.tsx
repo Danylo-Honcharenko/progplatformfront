@@ -17,7 +17,7 @@ const UserPanel = () => {
 
     const {loadingCourses, courses, courseError} = useCourses();
 
-    const coursesAmount = courses?.data.courses.length;
+    const coursesAmount = courses?.data.length;
 
     useEffect(() => {
         document.title = "Панель користувача";
@@ -47,7 +47,7 @@ const UserPanel = () => {
                                     <AlertDescription>Зверніться до адміністратора щоб стати учасником курсу!</AlertDescription>
                                 </Alert>
                                 :
-                                courses?.data?.courses.map((course) => <CourseCard course={course} key={course.id}/>)
+                                courses?.data.map((course) => <CourseCard course={course} key={course.id}/>)
                         }
                     </div>
                 }
